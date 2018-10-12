@@ -1,0 +1,11 @@
+boto==2.45.0
+CouchDB==1.1
+enum-compat==0.0.2
+eventlet==0.20.1
+gevent==1.2.1
+greenlet==0.4.12
+olefile==0.44
+Pillow==4.0.0
+psycopg2==2.6.2
+pymp-pypi==0.3.1
+SQLAlchemy==1.1.5
