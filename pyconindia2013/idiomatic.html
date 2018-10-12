@@ -1,0 +1,3823 @@
+<!DOCTYPE html>
+<!--
+  Copyright 2010 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  Original slides: Marcin Wichary (mwichary@google.com)
+  Modifications: Ernest Delgado (ernestd@google.com)
+                 Alex Russell (slightlyoff@chromium.org)
+
+  landslide modifications: Adam Zapletal (adamzap@gmail.com)
+                           Nicolas Perriault (nperriault@gmail.com)
+-->
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Idiomatic Programming with Python</title>
+    <!-- Styles -->
+    
+    <style type="text/css" media="print">
+      * {
+    margin: 0;
+    padding: 0;
+}
+
+@page {
+    size: landscape;
+}
+
+body {
+    font: 100% "Lucida Grande", "Trebuchet MS", Verdana, sans-serif;
+    padding: 0;
+    margin: 0;
+}
+
+div.slide {
+    min-width: 800px;
+    min-height: 600px;
+    padding: 1em;
+    overflow: hidden;
+    page-break-after: always;
+    border: 1px solid black;
+    border-radius: 20px;
+}
+
+div.slide div.inner {
+    width: 800px;
+    height: 600px;
+    margin: auto;
+}
+
+h1 {
+    font-size: 2.4em;
+}
+
+h2 {
+    font-size: 1.4em;
+}
+
+h3 {
+    margin: 1em 0;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+}
+
+p, li, pre {
+    margin: 1em 0;
+}
+
+li {
+    margin-left: 2em;
+}
+
+a {
+    color: #000000;
+}
+
+pre, code {
+    max-width: 800px;
+    background: #eee;
+    font-family: Monaco, monospace;
+    font-size: 90%;
+}
+
+pre {
+    padding: .2em .5em;
+    overflow: hidden;
+    border-radius: .8em;
+}
+
+code {
+    padding: 0 .2em;
+}
+
+.slide header:only-child h1 {
+  line-height: 180%;
+  text-align: center;
+  display: table-cell;
+  vertical-align: middle;
+  height: 600px;
+  width: 800px;
+  font-size: 48px;
+  margin-top:100px;
+  margin-bottom:100px;
+}
+
+#toc, #help, .slide aside, .slide footer, .slide .notes,
+.presenter_notes, #current_presenter_notes, #presenter_note {
+  display: none;
+}
+
+    </style>
+    <style type="text/css" media="screen, projection">
+      body {
+  font: 14px "Lucida Grande", "Trebuchet MS", Verdana, sans-serif;
+  background: #778;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+div.presentation {
+  position: absolute;
+  width: 100%;
+  display: table-cell;
+  vertical-align: middle;
+  height: 100%;
+  background: inherit;
+}
+
+div.presentation > h1 {
+  display: none;
+}
+
+div.slides, body.expose div.slides.nocontext {
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  position: absolute;
+  display: block;
+}
+
+div.slides.nocontext {
+  width: 900px;
+  margin: 0 auto;
+  overflow: hidden;
+  position: relative;
+  left: auto;
+  top: auto;
+}
+
+div.slide {
+  display: inline;
+  position: absolute;
+  overflow: hidden;
+  width: 900px;
+  height: 700px;
+  margin-top: -350px;
+  margin-left: -400px;
+  left: 50%;
+  top: 50%;
+  background: -webkit-gradient(linear, left bottom, left top, from(#bbd), to(#fff));
+  background-color: #eee;
+  background: -moz-linear-gradient(bottom, #bbd, #fff);
+  -webkit-transition: margin 0.25s ease-in-out;
+  -moz-transition: margin 0.25s ease-in-out;
+  -o-transition: margin 0.25s ease-in-out;
+  border-top-left-radius: 20px;
+  -moz-border-radius-topleft: 20px;
+  -webkit-border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  -moz-border-radius-topright: 20px;
+  -webkit-border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+  -moz-border-radius-bottomright: 20px;
+  -webkit-border-bottom-right-radius: 20px;
+  border-bottom-left-radius: 20px;
+  -moz-border-radius-bottomleft: 20px;
+  -webkit-border-bottom-left-radius: 20px;
+}
+
+/* Expose */
+
+body.expose div.slides {
+  float: left;
+  position: relative;
+  overflow: auto;
+  margin-bottom: 10px;
+}
+
+body.expose div.slide {
+  display: block;
+  float: left;
+  position: relative;
+  left: auto !important;
+  top: auto !important;
+  margin: 10px !important;
+  -webkit-transition: none;
+  -moz-transition: none;
+  -o-transition: none;
+  -moz-transform: scale(.33, .33);
+  -moz-transform-origin: 0 0;
+  -webkit-transform: scale(.33, .33);
+  -webkit-transform-origin: 0 0;
+  -o-transform: scale(.33, .33);
+  -o-transform-origin: 0 0;
+  -webkit-transition: none;
+  -moz-transition: none;
+  -o-transition: none;
+  cursor: pointer;
+}
+
+body.expose div.slide:hover {
+  background: -webkit-gradient(linear, left bottom, left top, from(#bdd), to(#fff));
+  background-color: #eee;
+  background: -moz-linear-gradient(bottom, #bdd, #fff);
+}
+
+body.expose .slide-wrapper {
+  float: left;
+  position: relative;
+  margin: .5%;
+  width: 300px;
+  height: 233px;
+}
+
+body.expose .slide footer {
+}
+
+body.expose .slide .inner {
+}
+
+body.expose .slide.far-past,
+body.expose .slide.past,
+body.expose .slide.future,
+body.expose .slide.far-future {
+  margin-left: 0;
+}
+
+body.expose .slide.current {
+  background: -webkit-gradient(linear, left bottom, left top, from(#ddb), to(#fff));
+  background-color: #eee;
+  background: -moz-linear-gradient(bottom, #ddb, #fff);
+  border: 16px solid #fff;
+  -moz-transform: scale(.315, .315);
+  -moz-transform-origin: 0 0;
+  -webkit-transform: scale(.315, .315);
+  -webkit-transform-origin: 0 0;
+  -o-transform: scale(.315, .315);
+  -o-transform-origin: 0 0;
+}
+
+/* Presenter Mode */
+
+body.presenter_view div.slide {
+  display: inline;
+  position: absolute;
+  overflow: hidden;
+  -moz-transform: scale(.5, .5);
+  -moz-transform-origin: 0 0;
+  -webkit-transform: scale(.5, .5);
+  -webkit-transform-origin: 0 0;
+  -o-transform: scale(.5, .5);
+  -o-transform-origin: 0 0;
+    margin-top: -300px;
+}
+
+body.presenter_view .slide.far-past {
+  display: block;
+  margin-left: -1500px;
+}
+
+body.presenter_view .slide.past {
+  display: block;
+  margin-left: -975px;
+}
+
+body.presenter_view .slide.current {
+  display: block;
+  margin-left: -475px;
+  border: 8px solid maroon;
+  z-index: 2;
+}
+
+body.presenter_view .slide.future {
+  display: block;
+  margin-left: 25px;
+  z-index: 1;
+}
+
+body.presenter_view .slide.far-future {
+  display: block;
+  margin-left: 525px;
+}
+
+body.presenter_view div#current_presenter_notes {
+    visibility: visible;
+    display: block;
+    position: absolute;
+    overflow: auto;
+    vertical-align: middle;
+    left: 50%;
+    top: 50%;
+    margin-left: -475px;
+    margin-top: 100px;
+    z-index: 2;
+    width: 950px;
+    border-style: solid;
+    height: 30%;
+    background-color: silver;
+}
+
+body.presenter_view div#current_presenter_notes section {
+  font-family: "Lucida Grande", "Trebuchet MS", Verdana, sans-serif;
+  color: black;
+  text-shadow: rgba(0, 0, 0, 0.2) 0 2px 5px;
+  display: block;
+  overflow: visible;
+    position: relative;
+    background-color: #fffeff;
+    height: 120px;
+    margin-right: 30px;
+    margin-top: 60px;
+    margin-left: 30px;
+    padding-right: 10px;
+    padding-left: 10px;
+    padding-top: 10px;
+}
+
+body.presenter_view div#current_presenter_notes section p {
+    margin: 0;
+}
+
+body.presenter_view div#current_presenter_notes h1 {
+    font-size: 50%;
+    display: block;
+}
+
+div#current_presenter_notes {
+  display: none;
+}
+
+div.slide div.presenter_notes, div.slides div.presenter_notes {
+  display: none;
+}
+
+/* Slide styles */
+
+div.slide p {
+  font-size: 20px;
+}
+
+.slide.far-past {
+  display: block;
+  margin-left: -2400px;
+}
+
+.slide.past {
+  display: block;
+  margin-left: -1400px;
+}
+
+.slide.current {
+  display: block;
+  margin-left: -450px;
+}
+
+.slide.future {
+  display: block;
+  margin-left: 500px;
+}
+
+.slide.far-future {
+  display: block;
+  margin-left: 1500px;
+}
+
+body.three-d div.slides {
+  -webkit-transform: translateX(50px) scale(0.8) rotateY(10deg);
+  -moz-transform: translateX(50px) scale(0.8) rotateY(10deg);
+  -o-transform: translateX(50px) scale(0.8) rotateY(10deg);
+}
+
+
+/* Content */
+
+header:not(:only-child) {
+  font-family: "Lucida Grande", "Trebuchet MS", Verdana, sans-serif;
+  font-weight: normal;
+  font-size: 50px;
+  letter-spacing: -.05em;
+  color: black;
+  text-shadow: rgba(0, 0, 0, 0.2) 0 2px 5px;
+  position: absolute;
+  left: 30px;
+  top: 25px;
+  margin: 0;
+  padding: 0;
+}
+
+header h1, header h2, header h3, header h4, header h5, header h6 {
+  display: inline;
+  font-size: 100%;
+  font-weight: normal;
+  padding: 0;
+  margin: 0;
+}
+
+header h2:first-child {
+  margin-top: 0;
+}
+
+section, .slide header:only-child h1 {
+  font-family: "Lucida Grande", "Trebuchet MS", Verdana, sans-serif;
+  color: #3f3f3f;
+  text-shadow: rgba(0, 0, 0, 0.2) 0 2px 5px;
+  margin-left: 30px;
+  margin-right: 30px;
+  margin-top: 100px;
+  display: block;
+  overflow: hidden;
+}
+
+img { display: block; margin: auto; }
+
+section img.align-center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+section img.align-right {
+  display: block;
+  margin-left: auto;
+  margin-right: 0;
+}
+
+section img.align-left {
+  display: block;
+  margin-right: auto;
+  margin-left: 0;
+}
+
+a {
+  color: inherit;
+  display: inline-block;
+  text-decoration: none;
+  line-height: 110%;
+  border-bottom: 2px solid #3f3f3f;
+}
+
+pre, code, tt {
+  font-family: Monaco, Consolas, 'Bitstream Vera Sans Mono', 'Lucida Console', FreeMono, Courier, monospace;
+}
+
+pre, .gist .gist-file .gist-data {
+  font-size: 18px;
+  max-height: 485px;
+  padding-top: 0.25em !important;
+  padding-right: 0.5em !important;
+  padding-left: 0.5em !important;
+  overflow: auto;
+}
+
+/* render a nice scrollbar in overflowed pre area's */
+::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: -webkit-gradient(linear, left bottom, left top, from(#777), to(#bbd));
+  -webkit-border-radius: 1ex;
+}
+::-webkit-scrollbar-corner {
+  background: #dedede;
+}
+
+blockquote {
+  border-left: solid 8px #778;
+  padding: .1ex 1ex;
+  font-style: italic;
+}
+
+li {
+  padding: 10px 0;
+  font-size: 20px;
+}
+
+li pre { margin-left: 0em; }
+
+.slide header:only-child h1 {
+  line-height: 180%;
+  text-align: center;
+  display: table-cell;
+  vertical-align: middle;
+  height: 700px;
+  width: 900px;
+  font-size: 50px;
+  margin-top:100px;
+  margin-bottom:100px;
+}
+
+.sidebar {
+  clear: both;
+  background: -webkit-gradient(linear, top right, bottom right, from(#dde), to(#fff));
+  -webkit-transition: margin 0.25s ease-in-out;
+  background-color: #eee;
+  background: -moz-linear-gradient(right, #dde, #fff);
+  border-right: 5px solid #ccd;
+  z-index: 9999999;
+  height: 100%;
+  overflow: hidden;
+  top: 0;
+  position: absolute;
+  display: block;
+  margin: 0;
+  margin-left: -400px;
+  padding: 10px 16px;
+  overflow: auto;
+  -webkit-transition: margin 0.2s ease-in-out;
+  -moz-transition: margin 0.2s ease-in-out;
+  -o-transition: margin 0.2s ease-in-out;
+}
+
+.sidebar h2 {
+  text-shadow: rgba(0, 0, 0, 0.2) 0 2px 5px;
+  margin: 0 0 16px;
+  padding: 0;
+}
+
+.sidebar table {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border-collapse: collapse;
+}
+
+.sidebar table caption {
+  display: none;
+}
+
+.sidebar tr {
+  margin: 2px 0;
+  border-bottom: 1px solid #ccc;
+}
+
+.sidebar th {
+  text-align: left;
+  font-weight: normal;
+  max-width: 300px;
+  overflow: hidden;
+}
+
+.sidebar tr.sub th {
+  text-indent: 20px;
+}
+
+.sidebar td {
+  text-align: right;
+  min-width: 20px;
+}
+
+.sidebar a {
+  display: block;
+  text-decoration: none;
+  border-bottom: none;
+  padding: 4px 0;
+}
+
+.sidebar tr.active {
+  background: #ff0;
+}
+
+aside {
+  display: none;
+}
+  aside.source {
+    position: absolute;
+    bottom: 6px;
+    left: 10px;
+    text-indent: 10px;
+  }
+  aside.page_number {
+    position: absolute;
+    bottom: 6px;
+    right: 10px;
+    text-indent: 10px;
+  }
+
+.notes {
+  display: none;
+  padding: 10px;
+  background: #ccc;
+  border-radius: 10px;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+}
+  div.slide p.notes {
+    font-size: 90%;
+}
+
+/* Pygments default theme */
+.hll { background-color: #ffffcc }
+.c { color: #408080; font-style: italic } /* Comment */
+.err { border: 1px solid #FF0000 } /* Error */
+.k { color: #008000; font-weight: bold } /* Keyword */
+.o { color: #666666 } /* Operator */
+.cm { color: #408080; font-style: italic } /* Comment.Multiline */
+.cp { color: #BC7A00 } /* Comment.Preproc */
+.c1 { color: #408080; font-style: italic } /* Comment.Single */
+.cs { color: #408080; font-style: italic } /* Comment.Special */
+.gd { color: #A00000 } /* Generic.Deleted */
+.ge { font-style: italic } /* Generic.Emph */
+.gr { color: #FF0000 } /* Generic.Error */
+.gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.gi { color: #00A000 } /* Generic.Inserted */
+.go { color: #808080 } /* Generic.Output */
+.gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.gs { font-weight: bold } /* Generic.Strong */
+.gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.gt { color: #0040D0 } /* Generic.Traceback */
+.kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.kp { color: #008000 } /* Keyword.Pseudo */
+.kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.kt { color: #B00040 } /* Keyword.Type */
+.m { color: #666666 } /* Literal.Number */
+.s { color: #BA2121 } /* Literal.String */
+.na { color: #7D9029 } /* Name.Attribute */
+.nb { color: #008000 } /* Name.Builtin */
+.nc { color: #0000FF; font-weight: bold } /* Name.Class */
+.no { color: #880000 } /* Name.Constant */
+.nd { color: #AA22FF } /* Name.Decorator */
+.ni { color: #999999; font-weight: bold } /* Name.Entity */
+.ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+.nf { color: #0000FF } /* Name.Function */
+.nl { color: #A0A000 } /* Name.Label */
+.nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+.nt { color: #008000; font-weight: bold } /* Name.Tag */
+.nv { color: #19177C } /* Name.Variable */
+.ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+.w { color: #bbbbbb } /* Text.Whitespace */
+.mf { color: #666666 } /* Literal.Number.Float */
+.mh { color: #666666 } /* Literal.Number.Hex */
+.mi { color: #666666 } /* Literal.Number.Integer */
+.mo { color: #666666 } /* Literal.Number.Oct */
+.sb { color: #BA2121 } /* Literal.String.Backtick */
+.sc { color: #BA2121 } /* Literal.String.Char */
+.sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.s2 { color: #BA2121 } /* Literal.String.Double */
+.se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+.sh { color: #BA2121 } /* Literal.String.Heredoc */
+.si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+.sx { color: #008000 } /* Literal.String.Other */
+.sr { color: #BB6688 } /* Literal.String.Regex */
+.s1 { color: #BA2121 } /* Literal.String.Single */
+.ss { color: #19177C } /* Literal.String.Symbol */
+.bp { color: #008000 } /* Name.Builtin.Pseudo */
+.vc { color: #19177C } /* Name.Variable.Class */
+.vg { color: #19177C } /* Name.Variable.Global */
+.vi { color: #19177C } /* Name.Variable.Instance */
+.il { color: #666666 } /* Literal.Number.Integer.Long */
+.lineno { padding-right: 10px } /* A few space after linenos */
+
+#blank {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: black;
+  width: 100%;
+  height: 100%;
+  z-index: 64;
+  display: none;
+}
+
+    </style>
+    
+    
+    <!-- /Styles -->
+    <!-- Javascripts -->
+    
+    <script>
+      function main() {
+    // Since we don't have the fallback of attachEvent and
+    // other IE only stuff we won't try to run JS for IE.
+    // It will run though when using Google Chrome Frame
+    if (document.all) { return; }
+
+    var currentSlideNo;
+    var notesOn = false;
+    var expanded = false;
+    var hiddenContext = false;
+    var blanked = false;
+    var slides = document.getElementsByClassName('slide');
+    var touchStartX = 0;
+    var spaces = /\s+/, a1 = [''];
+    var tocOpened = false;
+    var helpOpened = false;
+    var overviewActive = false;
+    var modifierKeyDown = false;
+    var scale = 1;
+    var showingPresenterView = false;
+    var presenterViewWin = null;
+    var isPresenterView = false;
+
+    var str2array = function(s) {
+        if (typeof s == 'string' || s instanceof String) {
+            if (s.indexOf(' ') < 0) {
+                a1[0] = s;
+                return a1;
+            } else {
+                return s.split(spaces);
+            }
+        }
+        return s;
+    };
+
+    var trim = function(str) {
+        return str.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+    };
+
+    var addClass = function(node, classStr) {
+        classStr = str2array(classStr);
+        var cls = ' ' + node.className + ' ';
+        for (var i = 0, len = classStr.length, c; i < len; ++i) {
+            c = classStr[i];
+            if (c && cls.indexOf(' ' + c + ' ') < 0) {
+                cls += c + ' ';
+            }
+        }
+        node.className = trim(cls);
+    };
+
+    var removeClass = function(node, classStr) {
+        var cls;
+        if (!node) {
+            throw 'no node provided';
+        }
+        if (classStr !== undefined) {
+            classStr = str2array(classStr);
+            cls = ' ' + node.className + ' ';
+            for (var i = 0, len = classStr.length; i < len; ++i) {
+                cls = cls.replace(' ' + classStr[i] + ' ', ' ');
+            }
+            cls = trim(cls);
+        } else {
+            cls = '';
+        }
+        if (node.className != cls) {
+            node.className = cls;
+        }
+    };
+
+    var getSlideEl = function(slideNo) {
+        if (slideNo > 0) {
+            return slides[slideNo - 1];
+        } else {
+            return null;
+        }
+    };
+
+    var getSlideTitle = function(slideNo) {
+        var el = getSlideEl(slideNo);
+        if (el) {
+            var headers = el.getElementsByTagName('header');
+            if (headers.length > 0) {
+                return el.getElementsByTagName('header')[0].innerText;
+            }
+        }
+        return null;
+    };
+
+    var getSlidePresenterNote = function(slideNo) {
+        var el = getSlideEl(slideNo);
+        if (el) {
+            var n = el.getElementsByClassName('presenter_notes');
+            if (n.length > 0) {
+                return n[0];
+            }
+        }
+        return null;
+    };
+
+    var changeSlideElClass = function(slideNo, className) {
+        var el = getSlideEl(slideNo);
+        if (el) {
+            removeClass(el, 'far-past past current future far-future');
+            addClass(el, className);
+        }
+    };
+
+    var updateSlideClasses = function(updateOther) {
+        window.location.hash = (isPresenterView ? "presenter" : "slide") + currentSlideNo;
+
+        for (var i=1; i<currentSlideNo-1; i++) {
+            changeSlideElClass(i, 'far-past');
+        }
+
+        changeSlideElClass(currentSlideNo - 1, 'past');
+        changeSlideElClass(currentSlideNo, 'current');
+        changeSlideElClass(currentSlideNo + 1, 'future');
+
+        for (i=currentSlideNo+2; i<slides.length+1; i++) {
+            changeSlideElClass(i, 'far-future');
+        }
+
+        highlightCurrentTocLink();
+
+        processContext();
+
+        document.getElementsByTagName('title')[0].innerText = getSlideTitle(currentSlideNo);
+
+        updatePresenterNotes();
+
+        if (updateOther) { updateOtherPage(); }
+    };
+
+    var updatePresenterNotes = function() {
+        if (!isPresenterView) { return; }
+
+        var existingNote = document.getElementById('current_presenter_notes');
+        var currentNote = getSlidePresenterNote(currentSlideNo).cloneNode(true);
+        currentNote.setAttribute('id', 'presenter_note');
+
+        existingNote.replaceChild(currentNote, document.getElementById('presenter_note'));
+    };
+
+    var highlightCurrentTocLink = function() {
+        var toc = document.getElementById('toc');
+
+        if (toc) {
+            var tocRows = toc.getElementsByTagName('tr');
+            for (var i=0; i<tocRows.length; i++) {
+                removeClass(tocRows.item(i), 'active');
+            }
+
+            var currentTocRow = document.getElementById('toc-row-' + currentSlideNo);
+            if (currentTocRow) {
+                addClass(currentTocRow, 'active');
+            }
+        }
+    };
+
+    var updateOtherPage = function() {
+        if (!showingPresenterView) { return; }
+
+        var w = isPresenterView ? window.opener : presenterViewWin;
+        w.postMessage('slide#' + currentSlideNo, '*');
+    };
+
+    var nextSlide = function() {
+        if (currentSlideNo < slides.length) {
+            currentSlideNo++;
+        }
+        updateSlideClasses(true);
+    };
+
+    var prevSlide = function() {
+        if (currentSlideNo > 1) {
+            currentSlideNo--;
+        }
+        updateSlideClasses(true);
+    };
+
+    var showNotes = function() {
+        var notes = getSlideEl(currentSlideNo).getElementsByClassName('notes');
+        for (var i = 0, len = notes.length; i < len; i++) {
+            notes.item(i).style.display = (notesOn) ? 'none':'block';
+        }
+        notesOn = !notesOn;
+    };
+
+    var showSlideNumbers = function() {
+        var asides = document.getElementsByClassName('page_number');
+        var hidden = asides[0].style.display != 'block';
+        for (var i = 0; i < asides.length; i++) {
+            asides.item(i).style.display = hidden ? 'block' : 'none';
+        }
+    };
+
+    var showSlideSources = function() {
+        var asides = document.getElementsByClassName('source');
+        var hidden = asides[0].style.display != 'block';
+        for (var i = 0; i < asides.length; i++) {
+            asides.item(i).style.display = hidden ? 'block' : 'none';
+        }
+    };
+
+    var showToc = function() {
+        if (helpOpened) {
+                showHelp();
+        }
+        var toc = document.getElementById('toc');
+        if (toc) {
+            toc.style.marginLeft = tocOpened ? '-' + (toc.clientWidth + 20) + 'px' : '0px';
+            tocOpened = !tocOpened;
+        }
+        updateOverview();
+    };
+
+    var showHelp = function() {
+        if (tocOpened) {
+                showToc();
+        }
+
+        var help = document.getElementById('help');
+
+        if (help) {
+            help.style.marginLeft = helpOpened ? '-' + (help.clientWidth + 20) + 'px' : '0px';
+            helpOpened = !helpOpened;
+        }
+    };
+
+    var showPresenterView = function() {
+        if (isPresenterView) { return; }
+
+        if (showingPresenterView) {
+            presenterViewWin.close();
+            presenterViewWin = null;
+            showingPresenterView = false;
+        } else {
+            presenterViewWin = open(window.location.pathname + "#presenter" + currentSlideNo, 'presenter_notes',
+                                                                    'directories=no,location=no,toolbar=no,menubar=no,copyhistory=no');
+            showingPresenterView = true;
+        }
+    };
+
+    var switch3D = function() {
+        if (document.body.className.indexOf('three-d') == -1) {
+            document.getElementsByClassName('presentation')[0].style.webkitPerspective = '1000px';
+            document.body.className += ' three-d';
+        } else {
+            window.setTimeout('document.getElementsByClassName(\'presentation\')[0].style.webkitPerspective = \'0\';', 2000);
+            document.body.className = document.body.className.replace(/three-d/, '');
+        }
+    };
+
+    var toggleOverview = function() {
+        if (!overviewActive) {
+            addClass(document.body, 'expose');
+            overviewActive = true;
+            setScale(1);
+        } else {
+            removeClass(document.body, 'expose');
+            overviewActive = false;
+            if (expanded) {
+                setScale(scale);    // restore scale
+            }
+        }
+        processContext();
+        updateOverview();
+    };
+
+    var updateOverview = function() {
+        try {
+            var presentation = document.getElementsByClassName('presentation')[0];
+        } catch (e) {
+            return;
+        }
+
+        if (isPresenterView) {
+            var action = overviewActive ? removeClass : addClass;
+            action(document.body, 'presenter_view');
+        }
+
+        var toc = document.getElementById('toc');
+
+        if (!toc) {
+            return;
+        }
+
+        if (!tocOpened || !overviewActive) {
+            presentation.style.marginLeft = '0px';
+            presentation.style.width = '100%';
+        } else {
+            presentation.style.marginLeft = toc.clientWidth + 'px';
+            presentation.style.width = (presentation.clientWidth - toc.clientWidth) + 'px';
+        }
+    };
+
+    var computeScale = function() {
+        var cSlide = document.getElementsByClassName('current')[0];
+        var sx = cSlide.clientWidth / window.innerWidth;
+        var sy = cSlide.clientHeight / window.innerHeight;
+        return 1 / Math.max(sx, sy);
+    };
+
+    var setScale = function(scale) {
+        var presentation = document.getElementsByClassName('slides')[0];
+        var transform = 'scale(' + scale + ')';
+        presentation.style.MozTransform = transform;
+        presentation.style.WebkitTransform = transform;
+        presentation.style.OTransform = transform;
+        presentation.style.msTransform = transform;
+        presentation.style.transform = transform;
+    };
+
+    var expandSlides = function() {
+        if (overviewActive) {
+            return;
+        }
+        if (expanded) {
+            setScale(1);
+            expanded = false;
+        } else {
+            scale = computeScale();
+            setScale(scale);
+            expanded = true;
+        }
+    };
+
+    var showContext = function() {
+        try {
+            var presentation = document.getElementsByClassName('slides')[0];
+            removeClass(presentation, 'nocontext');
+        } catch (e) {}
+    };
+
+    var hideContext = function() {
+        try {
+            var presentation = document.getElementsByClassName('slides')[0];
+            addClass(presentation, 'nocontext');
+        } catch (e) {}
+    };
+
+    var processContext = function() {
+        if (hiddenContext) {
+            hideContext();
+        } else {
+            showContext();
+        }
+    };
+
+    var toggleContext = function() {
+        hiddenContext = !hiddenContext;
+        processContext();
+    };
+
+    var toggleBlank = function() {
+        blank_elem = document.getElementById('blank');
+
+        blank_elem.style.display = blanked ? 'none' : 'block';
+
+        blanked = !blanked;
+    };
+
+    var isModifierKey = function(keyCode) {
+        switch (keyCode) {
+            case 16: // shift
+            case 17: // ctrl
+            case 18: // alt
+            case 91: // command
+                return true;
+                break;
+            default:
+                return false;
+                break;
+        }
+    };
+
+    var checkModifierKeyUp = function(event) {
+        if (isModifierKey(event.keyCode)) {
+            modifierKeyDown = false;
+        }
+    };
+
+    var checkModifierKeyDown = function(event) {
+        if (isModifierKey(event.keyCode)) {
+            modifierKeyDown = true;
+        }
+    };
+
+    var handleBodyKeyDown = function(event) {
+        switch (event.keyCode) {
+            case 13: // Enter
+                if (overviewActive) {
+                    toggleOverview();
+                }
+                break;
+            case 27: // ESC
+                toggleOverview();
+                break;
+            case 37: // left arrow
+            case 33: // page up
+                event.preventDefault();
+                prevSlide();
+                break;
+            case 39: // right arrow
+            case 32: // space
+            case 34: // page down
+                event.preventDefault();
+                nextSlide();
+                break;
+            case 50: // 2
+                if (!modifierKeyDown) {
+                        showNotes();
+                }
+                break;
+            case 51: // 3
+                if (!modifierKeyDown && !overviewActive) {
+                    switch3D();
+                }
+                break;
+            case 190: // .
+            case 48: // 0
+            case 66: // b
+                if (!modifierKeyDown && !overviewActive) {
+                    toggleBlank();
+                }
+                break;
+            case 67: // c
+                if (!modifierKeyDown && !overviewActive) {
+                    toggleContext();
+                }
+                break;
+            case 69: // e
+                if (!modifierKeyDown && !overviewActive) {
+                    expandSlides();
+                }
+                break;
+            case 72: // h
+                showHelp();
+                break;
+            case 78: // n
+                if (!modifierKeyDown && !overviewActive) {
+                    showSlideNumbers();
+                }
+                break;
+            case 80: // p
+                if (!modifierKeyDown && !overviewActive) {
+                    showPresenterView();
+                }
+                break;
+            case 83: // s
+                if (!modifierKeyDown && !overviewActive) {
+                    showSlideSources();
+                }
+                break;
+            case 84: // t
+                showToc();
+                break;
+        }
+    };
+
+    var handleWheel = function(event) {
+        if (tocOpened || helpOpened || overviewActive) {
+            return;
+        }
+
+        var delta = 0;
+
+        if (!event) {
+            event = window.event;
+        }
+
+        if (event.wheelDelta) {
+            delta = event.wheelDelta/120;
+            if (window.opera) delta = -delta;
+        } else if (event.detail) {
+            delta = -event.detail/3;
+        }
+
+        if (delta && delta <0) {
+            nextSlide();
+        } else if (delta) {
+            prevSlide();
+        }
+    };
+
+    var addSlideClickListeners = function() {
+        for (var i=0; i < slides.length; i++) {
+            var slide = slides.item(i);
+            slide.num = i + 1;
+            slide.addEventListener('click', function(e) {
+                if (overviewActive) {
+                    currentSlideNo = this.num;
+                    toggleOverview();
+                    updateSlideClasses(true);
+                    e.preventDefault();
+                }
+                return false;
+            }, true);
+        }
+    };
+
+    var addRemoteWindowControls = function() {
+        window.addEventListener("message", function(e) {
+            if (e.data.indexOf("slide#") != -1) {
+                    currentSlideNo = Number(e.data.replace('slide#', ''));
+                    updateSlideClasses(false);
+            }
+        }, false);
+    };
+
+    var addTouchListeners = function() {
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].pageX;
+        }, false);
+        document.addEventListener('touchend', function(e) {
+            var pixelsMoved = touchStartX - e.changedTouches[0].pageX;
+            var SWIPE_SIZE = 150;
+            if (pixelsMoved > SWIPE_SIZE) {
+                nextSlide();
+            }
+            else if (pixelsMoved < -SWIPE_SIZE) {
+             prevSlide();
+            }
+        }, false);
+    };
+
+    var addTocLinksListeners = function() {
+        var toc = document.getElementById('toc');
+        if (toc) {
+            var tocLinks = toc.getElementsByTagName('a');
+            for (var i=0; i < tocLinks.length; i++) {
+                tocLinks.item(i).addEventListener('click', function(e) {
+                    currentSlideNo = Number(this.attributes['href'].value.replace('#slide', ''));
+                    updateSlideClasses(true);
+                    e.preventDefault();
+                }, true);
+            }
+        }
+    };
+
+    // initialize
+
+    (function() {
+        if (window.location.hash == "") {
+            currentSlideNo = 1;
+        } else if (window.location.hash.indexOf("#presenter") != -1) {
+            currentSlideNo = Number(window.location.hash.replace('#presenter', ''));
+            isPresenterView = true;
+            showingPresenterView = true;
+            presenterViewWin = window;
+            addClass(document.body, 'presenter_view');
+        } else {
+            currentSlideNo = Number(window.location.hash.replace('#slide', ''));
+        }
+
+        document.addEventListener('keyup', checkModifierKeyUp, false);
+        document.addEventListener('keydown', handleBodyKeyDown, false);
+        document.addEventListener('keydown', checkModifierKeyDown, false);
+        document.addEventListener('DOMMouseScroll', handleWheel, false);
+
+        window.onmousewheel = document.onmousewheel = handleWheel;
+        window.onresize = expandSlides;
+
+        for (var i = 0, el; el = slides[i]; i++) {
+            addClass(el, 'slide far-future');
+        }
+        updateSlideClasses(false);
+
+        // add support for finger events (filter it by property detection?)
+        addTouchListeners();
+
+        addTocLinksListeners();
+
+        addSlideClickListeners();
+
+        addRemoteWindowControls();
+    })();
+}
+
+    </script>
+    
+    
+    <!-- /Javascripts -->
+</head>
+<body>
+  <div id="blank"></div>
+  <div class="presentation">
+    <div id="current_presenter_notes">
+      <div id="presenter_note"></div>
+    </div>
+    <div class="slides">
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Idiomatic Programming with Python</h1></header>
+            
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              1/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            
+            <section><p><strong>Anand B Pillai</strong> <br/>
+ <em>Consulting Software Architect</em><br/>
+ <em>anandpillai@letterboxes.org</em> <br/>
+ <em>@pythonhacker</em> <br/></p>
+<div class="footer">
+Coyright &copy; Anand B Pillai 2013.
+</div></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              2/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide has_code">
+          <div class="inner">
+            
+            
+            <section><p><strong>Code Example #1</strong></p>
+<div class="highlight"><pre><span class="c"># Make a list of odd numbers &lt; 100</span>
+
+<span class="c"># Solution A</span>
+<span class="n">odd</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">2</span><span class="p">:</span> <span class="n">odd</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+<span class="c"># Solution B</span>
+<span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span><span class="o">%</span><span class="mi">2</span><span class="p">]</span>
+</pre></div>
+</section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              3/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide has_code">
+          <div class="inner">
+            
+            
+            <section><p><strong>Coding Example #2</strong></p>
+<div class="highlight"><pre><span class="c"># Print 20 random prime numbers &lt; 1000</span>
+
+<span class="c"># Solution A</span>
+<span class="k">def</span> <span class="nf">is_prime</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Is the number &#39;n&#39; prime ? &quot;&quot;&quot;</span>        
+    <span class="n">prime</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="nb">pow</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="mf">0.5</span><span class="p">))</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">%</span> <span class="n">i</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span> 
+            <span class="n">prime</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="k">break</span>
+    <span class="k">return</span> <span class="n">prime</span>
+
+<span class="n">count</span><span class="p">,</span> <span class="n">numbers</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[]</span>
+
+<span class="k">while</span> <span class="n">count</span><span class="o">&lt;</span><span class="mi">20</span><span class="p">:</span>
+    <span class="n">num</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1000</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">num</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">numbers</span> <span class="ow">and</span> <span class="n">is_prime</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>    
+        <span class="n">numbers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+        <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+</pre></div>
+</section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              4/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide has_code">
+          <div class="inner">
+            
+            
+            <section><p><strong>Coding Example #2</strong></p>
+<div class="highlight"><pre><span class="c"># Solution B</span>
+<span class="n">sieve</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">n</span> <span class="o">%</span> <span class="n">num</span><span class="o">==</span><span class="mi">0</span> <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="nb">pow</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="mf">0.5</span><span class="p">))</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">cycle</span><span class="p">,</span><span class="n">imap</span><span class="p">,</span><span class="n">dropwhile</span><span class="p">,</span><span class="n">takewhile</span>
+<span class="n">nums</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">takewhile</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">nums</span><span class="p">)</span><span class="o">&lt;=</span><span class="mi">20</span><span class="p">,</span>
+                   <span class="n">dropwhile</span><span class="p">(</span><span class="n">sieve</span><span class="p">,</span><span class="n">imap</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">,</span><span class="n">cycle</span><span class="p">([</span><span class="mi">1</span><span class="p">]),</span>
+                             <span class="n">cycle</span><span class="p">([</span><span class="mi">100</span><span class="p">])))):</span>
+    <span class="n">nums</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+</pre></div>
+</section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              5/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>What is the difference between the code in Solution(s) A and B ?</h1></header>
+            
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              6/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            
+            <section><p><strong>Observations</strong></p>
+<ul>
+<li>Solutions A solve the problem, but with <em>just</em> code.</li>
+<li>Solutions B solve the problem with *Beautiful and 
+     Idiomatic code.</li>
+</ul>
+<div class="footer">
+*Caveat #1: As someone said, <i>Beauty is in the eyes of the beholder</i> .<br/>
+*Caveat #2: Beautiful, Idiomatic code <i><b>need not</b></i> always be the most efficient.
+</div></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              7/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            
+            <section><p><strong>Idiomatic</strong></p>
+<ul>
+<li>adj.<ul>
+<li>Peculiar to or characteristic of a given language.</li>
+<li>Characterized by proficient use of idiomatic expressions.</li>
+</ul>
+</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              8/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide has_code">
+          <div class="inner">
+            
+            
+            <section><p><strong>Pythonic</strong></p>
+<p>A style of coding that fits into the <strong>Zen of Python</strong> .</p>
+<div class="highlight"><pre><span class="c"># Pythonic</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>    
+<span class="o">&gt;&gt;&gt;</span>
+
+<span class="c"># Un-Pythonic (quite obvious eh ?)</span>
+<span class="c"># WARNING: Don&#39;t try this at $HOME.</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">braces</span>
+<span class="n">File</span> <span class="s">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span>
+<span class="ne">SyntaxError</span><span class="p">:</span> <span class="ow">not</span> <span class="n">a</span> <span class="n">chance</span>   
+<span class="o">&gt;&gt;&gt;</span>
+</pre></div>
+</section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              9/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Idiomatic ~= Pythonic</h1></header>
+            
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              10/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Iterators &amp; Dictionaries</h1></header>
+            
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              11/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide has_code">
+          <div class="inner">
+            
+            
+            <section><p><strong>Enumerating a list</strong></p>
+<div class="highlight"><pre><span class="c"># Solution A1</span>
+<span class="n">fruits</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;apple&#39;</span><span class="p">,</span><span class="s">&#39;mango&#39;</span><span class="p">,</span><span class="s">&#39;grapes&#39;</span><span class="p">,</span><span class="s">&#39;jackfruit&#39;</span><span class="p">,</span><span class="s">&#39;lemon&#39;</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">fruits</span><span class="p">)):</span>
+    <span class="k">print</span> <span class="n">i</span><span class="p">,</span><span class="s">&#39;--&gt;&#39;</span><span class="p">,</span><span class="n">fruits</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+<span class="c"># Solution A2</span>
+<span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">while</span> <span class="n">i</span><span class="o">&lt;</span><span class="nb">len</span><span class="p">(</span><span class="n">fruits</span><span class="p">):</span>
+    <span class="k">print</span> <span class="n">i</span><span class="p">,</span><span class="s">&#39;--&gt;&#39;</span><span class="p">,</span><span class="n">fruits</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+</pre></div>
+</section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              12/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide has_code">
+          <div class="inner">
+            
+            
+            <section><p><strong>Enumerating a list</strong></p>
+<div class="highlight"><pre><span class="c"># Solution B1 </span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">fruit</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">fruits</span><span class="p">):</span>
+    <span class="k">print</span> <span class="n">i</span><span class="p">,</span><span class="s">&#39;--&gt;&#39;</span><span class="p">,</span><span class="n">fruit</span>
+
+<span class="c"># Solution B2</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">fruit</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">fruits</span><span class="p">)),</span> <span class="n">fruits</span><span class="p">):</span>
+    <span class="k">print</span> <span class="n">i</span><span class="p">,</span><span class="s">&#39;--&gt;&#39;</span><span class="p">,</span><span class="n">fruit</span>
+
+<span class="c"># Output</span>
+
+<span class="mi">0</span> <span class="o">--&gt;</span> <span class="n">apple</span>
+<span class="mi">1</span> <span class="o">--&gt;</span> <span class="n">grapes</span>
+<span class="mi">2</span> <span class="o">--&gt;</span> <span class="n">jackfruit</span>
+<span class="mi">3</span> <span class="o">--&gt;</span> <span class="n">lemon</span>
+</pre></div>
+</section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              13/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide has_code">
+          <div class="inner">
+            
+            
+            <section><p><strong>Sorting to a field</strong></p>
+<div class="highlight"><pre><span class="c"># Sort a website according to its alexa rank</span>
+<span class="n">topsites</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;google&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span><span class="s">&#39;wikipedia&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+            <span class="s">&#39;linkedin&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span><span class="s">&#39;yahoo&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+            <span class="s">&#39;baidu&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span><span class="s">&#39;youtube&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+            <span class="s">&#39;facebook&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span><span class="s">&#39;qq&#39;</span><span class="p">:</span> <span class="mi">7</span><span class="p">}</span>
+
+<span class="c"># Solution A</span>
+<span class="c"># Make a list/tuple with first members as the rank            </span>
+<span class="n">topsites_items</span> <span class="o">=</span> <span class="p">[(</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="ow">in</span> <span class="n">topsites</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+<span class="k">print</span> <span class="n">topsites_items</span>
+
+<span class="c"># Output</span>
+<span class="p">[(</span><span class="mi">5</span><span class="p">,</span> <span class="s">&#39;baidu&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="s">&#39;qq&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;google&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#39;facebook&#39;</span><span class="p">),</span> 
+ <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s">&#39;youtube&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="s">&#39;wikipedia&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s">&#39;yahoo&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="s">&#39;linkedin&#39;</span><span class="p">)]</span>
+
+<span class="c"># Sort it</span>
+<span class="n">topsites_items</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+<span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">topsites_items</span><span class="p">]</span>
+</pre></div>
+</section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              14/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide has_code">
+          <div class="inner">
+            
+            
+            <section><p><strong>Sorting to a field</strong></p>
+<div class="highlight"><pre><span class="c"># Solution B</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">operator</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">topsites</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">))]</span>
+<span class="p">[</span><span class="s">&#39;google&#39;</span><span class="p">,</span> <span class="s">&#39;facebook&#39;</span><span class="p">,</span> <span class="s">&#39;youtube&#39;</span><span class="p">,</span> <span class="s">&#39;yahoo&#39;</span><span class="p">,</span> <span class="s">&#39;baidu&#39;</span><span class="p">,</span> <span class="s">&#39;wikipedia&#39;</span><span class="p">,</span> 
+ <span class="s">&#39;qq&#39;</span><span class="p">,</span> <span class="s">&#39;linkedin&#39;</span><span class="p">]</span>
+</pre></div>
+</section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              15/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide has_code">
+          <div class="inner">
+            
+            
+            <section><p><strong>Transposing a Matrix (list of lists)</strong></p>
+<div class="highlight"><pre><span class="c"># Solution A</span>
+<span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">randrange</span>
+
+<span class="k">class</span> <span class="nc">MatrixA</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>       
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">n</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">m</span><span class="p">,</span><span class="n">n</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="o">=</span><span class="p">[[</span><span class="n">randrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">)]</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">s</span><span class="o">=</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">r</span><span class="p">])</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">s</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span>
+
+    <span class="k">def</span> <span class="nf">transpose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Transpose a matrix &quot;&quot;&quot;</span>
+        <span class="n">rows2</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">m</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">):</span>
+                <span class="n">rows2</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="n">y</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">rows</span> <span class="o">=</span> <span class="n">rows2</span>
+        <span class="c"># Swap m and n</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">m</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">tmp</span>
+</pre></div>
+</section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              16/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide has_code">
+          <div class="inner">
+            
+            
+            <section><p><strong>Transposing a Matrix (list of lists)</strong></p>
+<div class="highlight"><pre><span class="c"># Solution B</span>
+<span class="k">class</span> <span class="nc">MatrixB</span><span class="p">(</span><span class="n">MatrixA</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A simple matrix class (see Ref) &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">transpose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">m</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rows</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">)</span>
+
+
+<span class="n">In</span> <span class="n">general</span> <span class="nb">zip</span> <span class="n">can</span> <span class="n">be</span> <span class="n">used</span> <span class="k">for</span> <span class="n">making</span> <span class="n">a</span> <span class="nb">list</span> <span class="n">of</span> <span class="n">tuples</span><span class="p">,</span> <span class="n">each</span> <span class="n">containing</span> 
+<span class="n">the</span> <span class="n">ith</span> <span class="n">element</span> <span class="n">of</span> <span class="n">the</span> <span class="n">passed</span> <span class="n">sequence</span><span class="o">.</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">zip</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">])</span>
+<span class="p">[(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">),(</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">)]</span>
+
+<span class="n">OR</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">l</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">l</span><span class="p">)</span>
+<span class="p">[(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">),(</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">)]</span>
+</pre></div>
+
+<div class="footer">
+<br/><br/><br/>
+<i>Ref: <a href="http://code.activestate.com/recipes/578131-a-simple-matrix-class/">
+http://code.activestate.com/recipes/578131-a-simple-matrix-class/</a></i>
+</div></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              17/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide has_code">
+          <div class="inner">
+            
+            
+            <section><p><strong>Grouping with dictionaries</strong></p>
+<div class="highlight"><pre><span class="c"># Bag containing more than 1 fruit of same type</span>
+<span class="n">fruit_bag</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;apple&#39;</span><span class="p">,</span><span class="s">&#39;grapes&#39;</span><span class="p">,</span><span class="s">&#39;apple&#39;</span><span class="p">,</span><span class="s">&#39;mango&#39;</span><span class="p">,</span><span class="s">&#39;mango&#39;</span><span class="p">,</span><span class="s">&#39;apple&#39;</span><span class="p">,</span>
+             <span class="s">&#39;banana&#39;</span><span class="p">,</span><span class="s">&#39;orange&#39;</span><span class="p">,</span><span class="s">&#39;guava&#39;</span><span class="p">,</span><span class="s">&#39;sapota&#39;</span><span class="p">,</span><span class="s">&#39;apple&#39;</span><span class="p">,</span><span class="s">&#39;orange&#39;</span><span class="p">,</span>
+             <span class="s">&#39;litchi&#39;</span><span class="p">,</span><span class="s">&#39;strawberry&#39;</span><span class="p">,</span><span class="s">&#39;lemon&#39;</span><span class="p">,</span><span class="s">&#39;apple&#39;</span><span class="p">,</span><span class="s">&#39;grapes&#39;</span><span class="p">]</span>
+
+<span class="c"># Group counts according to fruit</span>
+<span class="c"># Solution A</span>
+<span class="n">fruit_group</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">fruit</span> <span class="ow">in</span> <span class="n">fruit_bag</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">fruit</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fruit_group</span><span class="p">:</span>
+        <span class="n">fruit_group</span><span class="p">[</span><span class="n">fruit</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">fruit_group</span><span class="p">[</span><span class="n">fruit</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="k">print</span> <span class="n">fruit_group</span>
+
+<span class="c"># Output</span>
+<span class="p">{</span><span class="s">&#39;sapota&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&#39;apple&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> 
+ <span class="s">&#39;litchi&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&#39;strawberry&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> 
+ <span class="s">&#39;mango&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s">&#39;grapes&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> 
+ <span class="s">&#39;orange&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s">&#39;lemon&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> 
+ <span class="s">&#39;guava&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&#39;banana&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
+</pre></div>
+</section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              18/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide has_code">
+          <div class="inner">
+            
+            
+            <section><p><strong>Grouping with dictionaries</strong></p>
+<div class="highlight"><pre><span class="c"># Solution B1</span>
+
+<span class="n">fruit_group</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">fruit</span> <span class="ow">in</span> <span class="n">fruit_bag</span><span class="p">:</span>
+    <span class="n">fruit_group</span><span class="p">[</span><span class="n">fruit</span><span class="p">]</span> <span class="o">=</span> <span class="n">fruit_group</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">fruit</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+
+<span class="c"># Solution B2</span>
+<span class="c"># Grouping using defaultdict</span>
+
+<span class="n">fruit_group</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">fruit</span> <span class="ow">in</span> <span class="n">fruit_bag</span><span class="p">:</span>
+    <span class="n">fruit_group</span><span class="p">[</span><span class="n">fruit</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="k">print</span> <span class="n">fruit_group</span>
+<span class="c"># Output</span>
+<span class="n">defaultdict</span><span class="p">(</span><span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;int&#39;</span><span class="o">&gt;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;sapota&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&#39;apple&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s">&#39;litchi&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> 
+                           <span class="s">&#39;strawberry&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&#39;mango&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s">&#39;grapes&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> 
+                           <span class="s">&#39;orange&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s">&#39;lemon&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&#39;guava&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> 
+                           <span class="s">&#39;banana&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
+</pre></div>
+</section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              19/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide has_code">
+          <div class="inner">
+            
+            
+            <section><p><strong>Filter data from iterable using (multiple) conditions</strong></p>
+<p>Let us say we are given a dictionary of cut off 
+marks for different engineering subjects, given 
+out of 100.</p>
+<p>Problem - Find students who passed in each.</p>
+<div class="highlight"><pre><span class="n">cutoffs</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;maths&#39;</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span> <span class="s">&#39;elec&#39;</span><span class="p">:</span> <span class="s">&#39;35&#39;</span><span class="p">,</span>
+           <span class="s">&#39;lab&#39;</span>  <span class="p">:</span> <span class="mi">45</span><span class="p">,</span> <span class="s">&#39;cs&#39;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
+           <span class="s">&#39;phy&#39;</span>  <span class="p">:</span> <span class="mi">25</span><span class="p">,</span> <span class="s">&#39;chem&#39;</span><span class="p">:</span> <span class="mi">35</span><span class="p">}</span>
+
+<span class="n">marks_dict</span> <span class="o">=</span> <span class="p">{</span> <span class="s">&#39;Karan&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;maths&#39;</span><span class="p">:</span> <span class="mi">39</span><span class="p">,</span> <span class="s">&#39;elec&#39;</span><span class="p">:</span> <span class="mi">78</span><span class="p">,</span> <span class="s">&#39;cs&#39;</span><span class="p">:</span> <span class="mi">83</span><span class="p">,</span>
+                         <span class="s">&#39;lab&#39;</span><span class="p">:</span> <span class="mi">32</span><span class="p">,</span> <span class="s">&#39;phy&#39;</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span> <span class="s">&#39;chem&#39;</span><span class="p">:</span> <span class="mi">91</span><span class="p">},</span>
+               <span class="s">&#39;Arjun&#39;</span><span class="p">:</span>  <span class="p">{</span><span class="s">&#39;maths&#39;</span><span class="p">:</span> <span class="mi">49</span><span class="p">,</span> <span class="s">&#39;elec&#39;</span><span class="p">:</span> <span class="mi">45</span><span class="p">,</span> <span class="s">&#39;lab&#39;</span><span class="p">:</span> <span class="mi">53</span><span class="p">,</span>
+                         <span class="s">&#39;cs&#39;</span><span class="p">:</span> <span class="mi">43</span><span class="p">,</span> <span class="s">&#39;phy&#39;</span><span class="p">:</span> <span class="mi">86</span><span class="p">,</span> <span class="s">&#39;chem&#39;</span><span class="p">:</span> <span class="mi">54</span><span class="p">},</span>
+               <span class="s">&#39;Rancho&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;maths&#39;</span><span class="p">:</span> <span class="mi">86</span><span class="p">,</span> <span class="s">&#39;elec&#39;</span><span class="p">:</span> <span class="mi">85</span><span class="p">,</span> <span class="s">&#39;cs&#39;</span><span class="p">:</span> <span class="mi">95</span><span class="p">,</span>
+                          <span class="s">&#39;lab&#39;</span><span class="p">:</span> <span class="mi">83</span><span class="p">,</span> <span class="s">&#39;phy&#39;</span><span class="p">:</span> <span class="mi">91</span><span class="p">,</span> <span class="s">&#39;chem&#39;</span><span class="p">:</span> <span class="mi">75</span><span class="p">},</span>
+               <span class="s">&#39;Raju&#39;</span><span class="p">:</span>   <span class="p">{</span><span class="s">&#39;maths&#39;</span><span class="p">:</span> <span class="mi">32</span><span class="p">,</span> <span class="s">&#39;elec&#39;</span><span class="p">:</span> <span class="mi">36</span><span class="p">,</span> <span class="s">&#39;lab&#39;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+                          <span class="s">&#39;cs&#39;</span><span class="p">:</span> <span class="mi">26</span><span class="p">,</span> <span class="s">&#39;phy&#39;</span><span class="p">:</span> <span class="mi">35</span><span class="p">,</span> <span class="s">&#39;chem&#39;</span><span class="p">:</span> <span class="mi">41</span><span class="p">},</span>
+               <span class="s">&#39;Farhan&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;maths&#39;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s">&#39;elec&#39;</span><span class="p">:</span> <span class="mi">56</span><span class="p">,</span> <span class="s">&#39;cs&#39;</span><span class="p">:</span> <span class="mi">21</span><span class="p">,</span>
+                          <span class="s">&#39;lab&#39;</span><span class="p">:</span> <span class="mi">33</span><span class="p">,</span> <span class="s">&#39;phy&#39;</span><span class="p">:</span> <span class="mi">27</span><span class="p">,</span> <span class="s">&#39;chem&#39;</span><span class="p">:</span> <span class="mi">56</span><span class="p">}}</span>
+</pre></div>
+</section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              20/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide has_code">
+          <div class="inner">
+            
+            
+            <section><p><strong>Filter data from iterable using (multiple) conditions</strong></p>
+<div class="highlight"><pre><span class="c"># Solution A</span>
+
+<span class="k">def</span> <span class="nf">find_passed</span><span class="p">(</span><span class="n">marks_dict</span><span class="p">,</span><span class="n">cutoffs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Find students who passed for each subject &quot;&quot;&quot;</span>
+
+    <span class="c"># Using a dictionary and two for loops</span>
+    <span class="n">pass_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">subject</span><span class="p">:[]</span> <span class="k">for</span> <span class="n">subject</span> <span class="ow">in</span> <span class="n">cutoffs</span><span class="p">}</span>
+
+    <span class="k">for</span> <span class="n">subject</span><span class="p">,</span> <span class="n">cutoff</span> <span class="ow">in</span> <span class="n">cutoffs</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">student</span><span class="p">,</span> <span class="n">student_marks</span> <span class="ow">in</span> <span class="n">marks_dict</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">student_marks</span><span class="p">[</span><span class="n">subject</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">cutoff</span><span class="p">:</span>
+               <span class="n">pass_dict</span><span class="p">[</span><span class="n">subject</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">student</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">pass_dict</span>
+</pre></div>
+</section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              21/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide has_code">
+          <div class="inner">
+            
+            
+            <section><p><strong>Filter data from iterable using (multiple) conditions</strong></p>
+<div class="highlight"><pre><span class="c"># Solution B</span>
+
+<span class="c"># Solved idiomatically by using itertools.compress which allows </span>
+<span class="c"># &quot;selecting&quot; items from an iterable using a second iterable of </span>
+<span class="c"># boolean &quot;selectors&quot;.</span>
+
+<span class="k">def</span> <span class="nf">find_passed</span><span class="p">(</span><span class="n">marks_dict</span><span class="p">,</span> <span class="n">cutoffs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Find students who passed for each subject &quot;&quot;&quot;</span>
+
+    <span class="n">pass_dict</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+
+    <span class="c"># two dicts to single dictionary using &#39;dict comprehension&#39;</span>
+    <span class="n">selectors</span> <span class="o">=</span> <span class="p">{(</span><span class="n">subject</span><span class="p">,</span> <span class="n">student</span><span class="p">)</span> <span class="p">:</span><span class="n">cutoffs</span><span class="p">[</span><span class="n">subject</span><span class="p">]</span><span class="o">&lt;=</span><span class="n">val</span><span class="p">[</span><span class="n">subject</span><span class="p">]</span> <span class="k">for</span> 
+                  <span class="n">subject</span> <span class="ow">in</span> <span class="n">cutoffs</span> <span class="k">for</span> <span class="n">student</span><span class="p">,</span><span class="n">val</span> <span class="ow">in</span> <span class="n">marks_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+    <span class="c"># Select students who passed using itertools.compress</span>
+    <span class="n">passd</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">selectors</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">selectors</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+
+    <span class="c"># Create dictionary using defaultdict(list)</span>
+    <span class="k">for</span> <span class="n">subject</span><span class="p">,</span><span class="n">student</span> <span class="ow">in</span> <span class="n">passd</span><span class="p">:</span>
+        <span class="n">pass_dict</span><span class="p">[</span><span class="n">subject</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">student</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">pass_dict</span>
+</pre></div>
+</section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              22/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide has_code">
+          <div class="inner">
+            
+            
+            <section><p><strong>Itertools at work</strong></p>
+<p>Infinite iterators - count, cycle and repeat.</p>
+<div class="highlight"><pre><span class="c"># itertools.count can provide an infinite counter.</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">print</span> <span class="n">i</span>
+
+<span class="c"># itertools.cycle cycles through an iterator</span>
+<span class="c"># Will keep printing &#39;python&#39;</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">([</span><span class="s">&#39;python&#39;</span><span class="p">]):</span>
+    <span class="k">print</span> <span class="n">i</span>
+
+<span class="c"># itertools.repeat keeps repeating from an iterator</span>
+<span class="c"># Will keep producing range(10) when called in a loop</span>
+<span class="n">itertools</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+</pre></div>
+</section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              23/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide has_code">
+          <div class="inner">
+            
+            
+            <section><p><strong>Itertools at work</strong></p>
+<div class="highlight"><pre><span class="c"># chain returns elements from &#39;n&#39; iterators until they are exhausted.</span>
+
+<span class="c"># Make a dictionary of count of letters in a list of strings.</span>
+<span class="n">birds</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;parrot&#39;</span><span class="p">,</span><span class="s">&#39;crow&#39;</span><span class="p">,</span><span class="s">&#39;dove&#39;</span><span class="p">,</span><span class="s">&#39;peacock&#39;</span><span class="p">,</span><span class="s">&#39;macaw&#39;</span><span class="p">,</span><span class="s">&#39;hen&#39;</span><span class="p">]</span>
+<span class="n">frequency</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">letter</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">birds</span><span class="p">):</span> <span class="n">frequency</span><span class="p">[</span><span class="n">letter</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="c"># takewhile returns elements as long as a predicate(condition) is True.</span>
+
+<span class="c"># Give list of favorable countries</span>
+<span class="n">countries</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;U.S&#39;</span><span class="p">,</span><span class="s">&#39;U.K&#39;</span><span class="p">,</span><span class="s">&#39;India&#39;</span><span class="p">,</span><span class="s">&#39;Australia&#39;</span><span class="p">,</span><span class="s">&#39;Malaysia&#39;</span><span class="p">,</span><span class="s">&#39;Pakistan&#39;</span><span class="p">]</span>           
+<span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">takewhile</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">!=</span> <span class="s">&#39;Pakistan&#39;</span><span class="p">,</span> <span class="n">countries</span><span class="p">))</span>
+<span class="p">[</span><span class="s">&#39;U.S&#39;</span><span class="p">,</span> <span class="s">&#39;U.K&#39;</span><span class="p">,</span> <span class="s">&#39;India&#39;</span><span class="p">,</span> <span class="s">&#39;Australia&#39;</span><span class="p">,</span> <span class="s">&#39;Malaysia&#39;</span><span class="p">]</span>
+
+<span class="c"># dropwhile keeps dropping elements while predicate is True.</span>
+
+<span class="c"># Produce iterator of files &gt; a minimum size in current folder.</span>
+<span class="n">files</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([(</span><span class="nb">file</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="nb">file</span><span class="p">))</span> <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="s">&quot;.&quot;</span><span class="p">)],</span>
+               <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">dropwhile</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">8192</span><span class="p">,</span> <span class="n">files</span><span class="p">))</span>        
+<span class="p">[(</span><span class="s">&#39;idiomatic.md&#39;</span><span class="p">,</span> <span class="il">14749L</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;iterators.md&#39;</span><span class="p">,</span> <span class="il">17706L</span><span class="p">),</span> 
+ <span class="p">(</span><span class="s">&#39;idiomatic.html&#39;</span><span class="p">,</span> <span class="il">119014L</span><span class="p">)</span> <span class="p">(</span><span class="s">&#39;PSSI.pdf&#39;</span><span class="p">,</span> <span class="il">166270L</span><span class="p">)]</span>
+</pre></div>
+</section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              24/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Problem 1</h1></header>
+            
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              25/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            
+            <section><p><strong>Problem Statement</strong></p>
+<p>A stock trader wants to trade only in securities that match certain 
+conditions. For some securities, it would be if it crosses a limit 
+value, for some if it goes below the limit value (possibly for shorting).</p>
+<p>You are given a dictionary of securities and their limit values and a 
+condition as a dictionary. You are also given a list of securities 
+and their CMP.</p>
+<p>The problem is to idiomatically solve the problem of which securities he 
+needs to buy according to his conditions.</p></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              26/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide has_code">
+          <div class="inner">
+            
+            
+            <section><p><strong>Problem Data</strong></p>
+<div class="highlight"><pre><span class="n">stock_limits</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;REL&#39;</span> <span class="p">:</span> <span class="p">(</span><span class="mi">1200</span><span class="p">,</span> <span class="s">&#39;&gt;=&#39;</span><span class="p">),</span>
+                <span class="s">&#39;INF&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">2500</span><span class="p">,</span> <span class="s">&#39;&gt;&#39;</span><span class="p">),</span>
+                <span class="s">&#39;GLB&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">850</span><span class="p">,</span> <span class="s">&#39;&lt;&#39;</span><span class="p">),</span>
+                <span class="s">&#39;ACC&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1330</span><span class="p">,</span> <span class="s">&#39;==&#39;</span><span class="p">),</span>
+                <span class="s">&#39;JIN&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">720</span><span class="p">,</span> <span class="s">&#39;&lt;=&#39;</span><span class="p">),</span>
+                <span class="s">&#39;TRA&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1800</span><span class="p">,</span> <span class="s">&#39;&gt;=&#39;</span><span class="p">),</span>
+                <span class="s">&#39;PAC&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">95</span><span class="p">,</span> <span class="s">&#39;&gt;&#39;</span><span class="p">)}</span>
+
+<span class="c"># Input - Current Market Price of the securities</span>
+<span class="n">stock_prices</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;REL&#39;</span><span class="p">:</span> <span class="mi">1222</span><span class="p">,</span>
+                <span class="s">&#39;INF&#39;</span><span class="p">:</span> <span class="mi">2312</span><span class="p">,</span>
+                <span class="s">&#39;GLB&#39;</span><span class="p">:</span> <span class="mi">829</span><span class="p">,</span>
+                <span class="s">&#39;ACC&#39;</span><span class="p">:</span> <span class="mi">1335</span><span class="p">,</span>
+                <span class="s">&#39;JIN&#39;</span><span class="p">:</span> <span class="mi">755</span><span class="p">,</span>
+                <span class="s">&#39;TRA&#39;</span><span class="p">:</span> <span class="mi">1889</span><span class="p">,</span>
+                <span class="s">&#39;PAC&#39;</span><span class="p">:</span> <span class="mi">85</span><span class="p">}</span>
+
+<span class="c"># Expected answer - Sample</span>
+<span class="s">&#39;Stocks to trade in are REL,INF,ACC, TRA&#39;</span>
+</pre></div>
+
+<p>What you should (ideally) use ? - itertools, collections, operator modules.</p></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              27/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            
+            <section><p><strong>Problem - Next Step</strong></p>
+<p>Extend your solution to receive streaming input to simulate 
+real-time data coming from the stock market.</p>
+<p>HINT: Look at the <strong>infinite</strong> itertools functions - Namely <strong>itertools.cycle</strong>, <strong>itertools.repeat</strong>  and <strong>itertools.count</strong> .</p></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              28/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide has_code">
+          <div class="inner">
+            
+            
+            <section><p><strong>Itertools at work (contd.)</strong></p>
+<div class="highlight"><pre><span class="c"># Problem - Drop punctuations from a list of strings</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">string</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">imap</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">punc</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">punctuation</span>
+
+<span class="c"># Solution A1 - Using a generator expresson nested </span>
+<span class="c"># inside list comprehension</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">strings</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;#I love,@,#&#39;</span><span class="p">,</span><span class="s">&#39; PyCon India..$#,&#39;</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">s</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">punc</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">strings</span><span class="p">]</span>           
+<span class="p">[</span><span class="s">&#39;I love&#39;</span><span class="p">,</span> <span class="s">&#39; PyCon India&#39;</span><span class="p">]</span>
+
+<span class="c"># Solution A2 - Functional tools</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">x</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">punc</span><span class="p">),</span><span class="n">strings</span><span class="p">)</span>
+<span class="p">[</span><span class="s">&#39;I love&#39;</span><span class="p">,</span> <span class="s">&#39; PyCon India&#39;</span><span class="p">]</span>
+
+<span class="c"># Solution B1 - Itertools imap</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">list</span><span class="p">(</span><span class="n">imap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">x</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">punc</span><span class="p">),</span><span class="n">strings</span><span class="p">))</span>
+<span class="p">[</span><span class="s">&#39;I love&#39;</span><span class="p">,</span> <span class="s">&#39; PyCon India&#39;</span><span class="p">]</span>
+
+<span class="c"># Solution B2 - Itertools chain, ifilter</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">ifilter</span><span class="p">,</span> <span class="n">chain</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ifilter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">punc</span><span class="p">,</span> <span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">strings</span><span class="p">)))</span>      
+<span class="s">&#39;I love PyCon India &#39;</span>
+</pre></div>
+</section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              29/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide has_code">
+          <div class="inner">
+            
+            
+            <section><p><strong>Sometimes, brute force does the trick faster!</strong></p>
+<div class="highlight"><pre><span class="c"># Problem - Drop punctuations from a list of strings</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">re</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">&#39;[&#39;</span> <span class="o">+</span> <span class="n">punc</span> <span class="o">+</span> <span class="s">&#39;]+&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">strings</span><span class="p">]</span>
+<span class="p">[</span><span class="s">&#39;I love&#39;</span><span class="p">,</span> <span class="s">&#39; PyCon India&#39;</span><span class="p">]</span>
+</pre></div>
+</section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              30/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide has_code">
+          <div class="inner">
+            
+            
+            <section><p><strong>Really ? Let us time them!</strong></p>
+<p>My timing functions look like this.</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">repl_listcomp</span><span class="p">(</span><span class="n">strings</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span><span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">s</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">punc</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">strings</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">repl_functional</span><span class="p">(</span><span class="n">strings</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">x</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">punc</span><span class="p">),</span><span class="n">strings</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">repl_itertools1</span><span class="p">(</span><span class="n">strings</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">imap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">x</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">punc</span><span class="p">),</span><span class="n">strings</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">repl_itertools2</span><span class="p">(</span><span class="n">strings</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ifilter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">punc</span><span class="p">,</span> <span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">strings</span><span class="p">)))</span>
+
+<span class="k">def</span> <span class="nf">repl_re</span><span class="p">(</span><span class="n">strings</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">&#39;[&#39;</span> <span class="o">+</span> <span class="n">punc</span> <span class="o">+</span> <span class="s">&#39;]+&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">strings</span><span class="p">]</span>
+</pre></div>
+</section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              31/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            
+            <section><p><strong>Timing results</strong></p>
+<p><em>NOTE: I am using my own timing function built on top of timeit module.</em></p>
+<p>$ python timing.py<br/>
+Listcomp =&gt; 6.39 usec/pass<br/>
+Functional =&gt; 7.00 usec/pass<br/>
+Itertools #1 =&gt; <strong>7.78</strong> usec/pass<br/>
+Itertools #2 =&gt; <strong>8.14</strong> usec/pass<br/>
+Re =&gt; <strong>6.10</strong> usec/pass<br/></p>
+<p>As (some of you might have) expected,</p>
+<ul>
+<li>The regular expression solution is the fastest.</li>
+<li>The itertools solutions seem slowest (<em>recall caveat ?</em>)</li>
+</ul>
+<p>However the scale of time difference between best (6.10 usec) and 
+worst(8.14 usec) is just about 2 usec/pass - that is roughly 
+<strong>2 sec</strong> per <strong>million</strong> calls, which is quite <strong><em>trivial</em></strong> .</p></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              32/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide has_code">
+          <div class="inner">
+            
+            
+            <section><p><strong>However</strong>,</p>
+<p>Let us look at the timing functions rewritten now to NOT do the join.</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">repl_listcomp</span><span class="p">(</span><span class="n">strings</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">s</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">punc</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">strings</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">repl_functional</span><span class="p">(</span><span class="n">strings</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">x</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">punc</span><span class="p">],</span><span class="n">strings</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">repl_itertools1</span><span class="p">(</span><span class="n">strings</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">imap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">x</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">punc</span><span class="p">],</span><span class="n">strings</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">repl_itertools2</span><span class="p">(</span><span class="n">strings</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">ifilter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">punc</span><span class="p">,</span> <span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">strings</span><span class="p">)))</span>
+</pre></div>
+
+<p>And,</p>
+<p>$ python timing2.py<br/>
+Listcomp =&gt; 4.25 usec/pass<br/>
+Functional =&gt; 4.71 usec/pass<br/>
+Itertools #1 =&gt; <strong>5.73</strong> usec/pass<br/>
+Itertools #2 =&gt; 7.84 usec/pass<br/></p></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              33/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide has_code">
+          <div class="inner">
+            
+            
+            <section><p><strong>A relook at the Prime number problem</strong></p>
+<p>Solved the problem of generating a fixed number (20)
+of prime numbers from a random pool.   </p>
+<div class="highlight"><pre><span class="n">sieve</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">n</span> <span class="o">%</span> <span class="n">num</span><span class="o">==</span><span class="mi">0</span> <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="nb">pow</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="mf">0.5</span><span class="p">))</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">cycle</span><span class="p">,</span><span class="n">imap</span><span class="p">,</span><span class="n">dropwhile</span><span class="p">,</span><span class="n">takewhile</span>
+<span class="n">nums</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">takewhile</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">nums</span><span class="p">)</span><span class="o">&lt;=</span><span class="mi">20</span><span class="p">,</span>
+                   <span class="n">dropwhile</span><span class="p">(</span><span class="n">sieve</span><span class="p">,</span><span class="n">imap</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">,</span><span class="n">cycle</span><span class="p">([</span><span class="mi">1</span><span class="p">]),</span>
+                             <span class="n">cycle</span><span class="p">([</span><span class="mi">100</span><span class="p">])))):</span>
+    <span class="n">nums</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+</pre></div>
+</section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              34/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Problem 2</h1></header>
+            
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              35/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            
+            <section><p><strong>Find Circular Primes</strong></p>
+<p>The number 197 is a <strong><em>Circular Prime</em></strong> because all rotations of the digit
+197, 917 and 719 are themselves prime.</p>
+<p>There are thirteen such primes below 100: </p>
+<p>2, 3, 5, 7, 11, 13, 17, 31, 37, 71, 73, 79, and 97.</p>
+<p>Problem - Find all circular prime numbers less than 5 million.</p>
+<p>HINT(S) - Use the sieve function with itertools functions.</p>
+<p>Modules you can(should) use - itertools, collections, operator.</p></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              36/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide has_code">
+          <div class="inner">
+            
+            
+            <section><p><strong>Checking for Sentinel values</strong></p>
+<p>Often you need to write a piece of code that stops after
+a certain value (often called a <strong>sentinel</strong>). For example, 
+let us look at this block of code that stops after it finds 
+a certain number in a random stream.</p>
+<div class="highlight"><pre><span class="c"># Solution A</span>
+<span class="c"># Append numbers till you hit say 41</span>
+
+<span class="n">nums</span> <span class="o">=</span> <span class="p">[]</span>        
+<span class="n">sentinel</span> <span class="o">=</span> <span class="mi">41</span>
+<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+    <span class="n">num</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">num</span> <span class="o">==</span> <span class="n">sentinel</span><span class="p">:</span> <span class="k">break</span>
+    <span class="n">nums</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+</pre></div>
+</section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              37/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide has_code">
+          <div class="inner">
+            
+            
+            <section><p><strong>Checking for Sentinel values</strong></p>
+<div class="highlight"><pre><span class="c"># Solution B1</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+
+<span class="n">func</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span> 
+<span class="n">nums</span><span class="p">,</span> <span class="n">sentinel</span> <span class="o">=</span> <span class="p">[],</span> <span class="mi">41</span>
+
+<span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">sentinel</span><span class="p">):</span>    
+    <span class="n">nums</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+
+<span class="c"># Solution B2</span>
+<span class="c"># WARNING: This itertools solution is almost like magic.</span>
+<span class="n">sentinel</span><span class="o">=</span><span class="mi">49</span>
+<span class="nb">list</span><span class="p">(</span><span class="n">takewhile</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">!=</span><span class="n">sentinel</span><span class="p">,</span> 
+     <span class="n">imap</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">,</span> <span class="n">cycle</span><span class="p">([</span><span class="mi">1</span><span class="p">]),</span> <span class="n">cycle</span><span class="p">([</span><span class="mi">100</span><span class="p">]))))</span>
+</pre></div>
+</section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              38/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Problem 3</h1></header>
+            
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              39/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide has_code">
+          <div class="inner">
+            
+            
+            <section><p><strong>Word Checker</strong></p>
+<p>Write a function that scans a folder for the combination 
+of two specific words in a file. Once it finds the combination, 
+it should stop reading the files. The words can occur
+anywhere in the file (need not be in order) and are
+case insensitive.</p>
+<p>Modules to use - os, itertools, collections, functools,... 
+Arguments to accept - Folder path, the two words.</p>
+<p>Sample Usage</p>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="n">FolderScan</span><span class="p">(</span><span class="s">&quot;.&quot;</span><span class="p">,</span> <span class="s">&#39;python&#39;</span><span class="p">,</span><span class="s">&#39;pycon&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+<span class="s">&quot;Words found at file ./pyconindia.txt&#39;</span>
+</pre></div>
+</section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              40/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Decators, context managers, "with"</h1></header>
+            
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              41/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide has_code">
+          <div class="inner">
+            
+            
+            <section><p><strong>Problem of Code Overhead</strong></p>
+<p>Look at the following code.</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Add 2 numbers &quot;&quot;&quot;</span>
+    <span class="n">safe</span> <span class="o">=</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">safe</span><span class="p">:</span> <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
+    <span class="k">else</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">,</span> <span class="s">&quot;Wrong type!&quot;</span>
+
+<span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Multiple 2 numbers &quot;&quot;&quot;</span>
+    <span class="n">safe</span> <span class="o">=</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">safe</span><span class="p">:</span> <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span>
+    <span class="k">else</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">,</span> <span class="s">&quot;Wrong type!&quot;</span>
+</pre></div>
+
+<p>The type checks are basically <strong>management code</strong> which are common to both functions. Such <strong>code overhead</strong> is better moved to decorators at one single place.</p></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              42/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide has_code">
+          <div class="inner">
+            
+            
+            <section><p><strong>Management code using Decorators</strong></p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">isNumber</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">args</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">,</span><span class="s">&#39;Wrong type!&#39;</span>
+        <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">wrapper</span>
+
+<span class="nd">@isNumber</span>
+<span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">+</span><span class="n">y</span>
+
+<span class="nd">@isNumber</span>
+<span class="k">def</span> <span class="nf">mul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">*</span><span class="n">y</span>
+</pre></div>
+</section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              43/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide has_code">
+          <div class="inner">
+            
+            
+            <section><p><strong>Caching Decorators</strong></p>
+<p>A common use of decorators is to cache frequently required information. Here is a simple example.</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">cache</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">args</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&#39;From cache&#39;</span>
+            <span class="k">return</span> <span class="n">results</span><span class="p">[</span><span class="n">args</span><span class="p">]</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">results</span><span class="p">[</span><span class="n">args</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span>
+        <span class="k">return</span> <span class="n">res</span>
+<span class="k">return</span> <span class="n">wrapper</span>
+
+<span class="nd">@cache</span>
+<span class="k">def</span> <span class="nf">factorial</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span> <span class="n">x</span><span class="o">*</span><span class="n">y</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">factorial</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="mi">120</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">factorial</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="mi">3628800</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">factorial</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">From</span> <span class="n">cache</span>
+<span class="mi">120</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">factorial</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">From</span> <span class="n">cache</span>
+<span class="mi">3628800</span>
+</pre></div>
+</section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              44/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Problem 4</h1></header>
+            
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              45/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide has_code">
+          <div class="inner">
+            
+            
+            <section><p><strong>Anagram Finder</strong></p>
+<p>Implement a class with a caching decorator that returns anagram words
+from a dictionary. The class would consist of two actions - First
+indexing a dictionary file to find similaries and then given a word,
+find words which are anagrams of it and cache the results. 
+You can try implementing LRU semantics for least frequent words.
+(It would be also nice to take care of punctuations.)</p>
+<p>Sample Usage Below.</p>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span> <span class="o">=</span> <span class="n">DictReader</span><span class="p">(</span><span class="s">&#39;/usr/share/dict/words&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">d</span><span class="o">.</span><span class="n">index</span><span class="p">()</span> <span class="c"># Takes a while</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">d</span><span class="o">.</span><span class="n">anagrams</span><span class="p">(</span><span class="s">&#39;crates&#39;</span><span class="p">)</span>
+<span class="n">Anagrams</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s">&#39;carets&#39;</span><span class="p">,</span> <span class="s">&#39;caster&#39;</span><span class="p">,</span> <span class="s">&#39;caters&#39;</span><span class="p">,</span> <span class="s">&#39;crates&#39;</span><span class="p">,</span> 
+             <span class="s">&#39;reacts&#39;</span><span class="p">,</span> <span class="s">&#39;recast&#39;</span><span class="p">,</span> <span class="s">&#39;traces&#39;</span><span class="p">]</span>
+</pre></div>
+</section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              46/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide has_code">
+          <div class="inner">
+            
+            
+            <section><p><strong>Factoring out local contexts with "<i>with</i>"</strong></p>
+<p>There are many cases in programming where you need to call some methods when you enter and exit out of the context of a statement. For example,</p>
+<div class="highlight"><pre><span class="c"># Locking a critical section</span>
+<span class="c"># Solution A</span>
+<span class="n">lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+<span class="c"># Entering critical section</span>
+<span class="n">lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="c"># Critical section code</span>
+    <span class="n">my_critical_section</span><span class="p">()</span>
+<span class="k">finally</span><span class="p">:</span>
+    <span class="c"># Exiting critical section      </span>
+    <span class="n">lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+</pre></div>
+
+<p>The <strong>with</strong> statement allows you to factor out these contexts. </p>
+<div class="highlight"><pre><span class="c"># Solution B</span>
+<span class="k">with</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">():</span> <span class="c"># lock acquired at this point</span>
+    <span class="n">my_critical_section</span><span class="p">()</span>
+<span class="c"># lock released at this point</span>
+</pre></div>
+
+<p>You can write your own <strong>context managers</strong> by using the <strong>contextlib</strong> module that can be used with the <strong>with</strong> statement.</p></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              47/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide has_code">
+          <div class="inner">
+            
+            
+            <section><p><strong>Making sure an child text block is always printed nicely indented relative to its parent block</strong></p>
+<div class="highlight"><pre><span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">contextmanager</span>
+
+<span class="n">spaces</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="nd">@contextmanager</span>
+<span class="k">def</span> <span class="nf">indent</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">spaces</span>
+    <span class="n">spaces</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">print</span> <span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="o">*</span><span class="n">spaces</span><span class="p">,</span>
+    <span class="k">yield</span>
+    <span class="n">spaces</span> <span class="o">-=</span> <span class="mi">1</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">indent</span><span class="p">():</span> <span class="k">print</span> <span class="s">&#39;This is number&#39;</span><span class="p">,</span><span class="n">i</span>
+        <span class="c"># Indent more</span>
+        <span class="k">with</span> <span class="n">indent</span><span class="p">():</span> <span class="k">print</span> <span class="s">&#39;This is its square&#39;</span><span class="p">,</span><span class="n">i</span><span class="o">*</span><span class="n">i</span>
+
+<span class="c"># Output</span>
+<span class="n">This</span> <span class="ow">is</span> <span class="n">number</span> <span class="mi">2</span>
+    <span class="n">This</span> <span class="ow">is</span> <span class="n">its</span> <span class="n">square</span> <span class="mi">4</span>
+<span class="n">This</span> <span class="ow">is</span> <span class="n">number</span> <span class="mi">3</span>
+    <span class="n">This</span> <span class="ow">is</span> <span class="n">its</span> <span class="n">square</span> <span class="mi">9</span>
+<span class="n">This</span> <span class="ow">is</span> <span class="n">number</span> <span class="mi">4</span>
+    <span class="n">This</span> <span class="ow">is</span> <span class="n">its</span> <span class="n">square</span> <span class="mi">16</span>
+</pre></div>
+</section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              48/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide has_code">
+          <div class="inner">
+            
+            
+            <section><p><strong>Context manager classes</strong></p>
+<p>You can also create classes that implement context management semantics by implementing special <b>&#95;&#95;enter&#95;&#95;</b> and <b>&#95;&#95;exit&#95;&#95;</b> methods.</p>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">Indent</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spaces</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spaces</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">print</span> <span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">spaces</span><span class="p">,</span>
+
+    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spaces</span> <span class="o">-=</span> <span class="mi">1</span>
+</pre></div>
+
+<p>Usage difers a bit.</p>
+<div class="highlight"><pre><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">):</span>
+    <span class="c"># Indenter has to be created once and reused, or should be a Singleton</span>
+    <span class="n">indenter</span> <span class="o">=</span> <span class="n">Indent</span><span class="p">()</span>
+    <span class="k">with</span> <span class="n">indenter</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&#39;This is number&#39;</span><span class="p">,</span><span class="n">i</span>
+        <span class="k">with</span> <span class="n">indenter</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&#39;This is its square&#39;</span><span class="p">,</span><span class="n">i</span><span class="o">*</span><span class="n">i</span>
+</pre></div>
+</section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              49/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Problem 5</h1></header>
+            
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              50/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide has_code">
+          <div class="inner">
+            
+            
+            <section><p><strong>Context-Aware Source Code Debugger</strong></p>
+<p>Implement a context manager class that can be used to keep track of source code information - i.e file name, line number in the source when the context is entered. This can be used to implement a context-specific debug manager that keeps track of details of when the specific context is entered.</p>
+<ul>
+<li>Source file name, Function name</li>
+<li>Timestamp, Time spent in the context</li>
+</ul>
+<p>These information should be saved to a dictionary and then persisted to disk. </p>
+<p>Sample Usage.</p>
+<div class="highlight"><pre><span class="k">with</span> <span class="n">my_debugger</span><span class="p">():</span>
+    <span class="c"># Start keeping track of function, filename etc.</span>
+    <span class="n">do_something</span><span class="p">()</span>
+
+<span class="c"># End my_debugger - calculate time spent in context</span>
+</pre></div>
+</section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              51/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>yield Q&amp;A</h1></header>
+            
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              52/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: idiomatic.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Thank You!</h1></header>
+            
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="idiomatic.md">idiomatic.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              53/53
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+  <div id="toc" class="sidebar hidden">
+    <h2>Table of Contents</h2>
+    <table>
+      <caption>Table of Contents</caption>
+      
+      <tr id="toc-row-1">
+        <th><a href="#slide1">Idiomatic Programming with Python</a></th>
+        <td><a href="#slide1">1</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-2">
+        <th><a href="#slide2">-</a></th>
+        <td><a href="#slide2">2</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-3">
+        <th><a href="#slide3">-</a></th>
+        <td><a href="#slide3">3</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-4">
+        <th><a href="#slide4">-</a></th>
+        <td><a href="#slide4">4</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-5">
+        <th><a href="#slide5">-</a></th>
+        <td><a href="#slide5">5</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-6">
+        <th><a href="#slide6">What is the difference between the code in Solution(s) A and B ?</a></th>
+        <td><a href="#slide6">6</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-7">
+        <th><a href="#slide7">-</a></th>
+        <td><a href="#slide7">7</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-8">
+        <th><a href="#slide8">-</a></th>
+        <td><a href="#slide8">8</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-9">
+        <th><a href="#slide9">-</a></th>
+        <td><a href="#slide9">9</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-10">
+        <th><a href="#slide10">Idiomatic ~= Pythonic</a></th>
+        <td><a href="#slide10">10</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-11">
+        <th><a href="#slide11">Iterators &amp; Dictionaries</a></th>
+        <td><a href="#slide11">11</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-12">
+        <th><a href="#slide12">-</a></th>
+        <td><a href="#slide12">12</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-13">
+        <th><a href="#slide13">-</a></th>
+        <td><a href="#slide13">13</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-14">
+        <th><a href="#slide14">-</a></th>
+        <td><a href="#slide14">14</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-15">
+        <th><a href="#slide15">-</a></th>
+        <td><a href="#slide15">15</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-16">
+        <th><a href="#slide16">-</a></th>
+        <td><a href="#slide16">16</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-17">
+        <th><a href="#slide17">-</a></th>
+        <td><a href="#slide17">17</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-18">
+        <th><a href="#slide18">-</a></th>
+        <td><a href="#slide18">18</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-19">
+        <th><a href="#slide19">-</a></th>
+        <td><a href="#slide19">19</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-20">
+        <th><a href="#slide20">-</a></th>
+        <td><a href="#slide20">20</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-21">
+        <th><a href="#slide21">-</a></th>
+        <td><a href="#slide21">21</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-22">
+        <th><a href="#slide22">-</a></th>
+        <td><a href="#slide22">22</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-23">
+        <th><a href="#slide23">-</a></th>
+        <td><a href="#slide23">23</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-24">
+        <th><a href="#slide24">-</a></th>
+        <td><a href="#slide24">24</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-25">
+        <th><a href="#slide25">Problem 1</a></th>
+        <td><a href="#slide25">25</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-26">
+        <th><a href="#slide26">-</a></th>
+        <td><a href="#slide26">26</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-27">
+        <th><a href="#slide27">-</a></th>
+        <td><a href="#slide27">27</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-28">
+        <th><a href="#slide28">-</a></th>
+        <td><a href="#slide28">28</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-29">
+        <th><a href="#slide29">-</a></th>
+        <td><a href="#slide29">29</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-30">
+        <th><a href="#slide30">-</a></th>
+        <td><a href="#slide30">30</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-31">
+        <th><a href="#slide31">-</a></th>
+        <td><a href="#slide31">31</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-32">
+        <th><a href="#slide32">-</a></th>
+        <td><a href="#slide32">32</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-33">
+        <th><a href="#slide33">-</a></th>
+        <td><a href="#slide33">33</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-34">
+        <th><a href="#slide34">-</a></th>
+        <td><a href="#slide34">34</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-35">
+        <th><a href="#slide35">Problem 2</a></th>
+        <td><a href="#slide35">35</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-36">
+        <th><a href="#slide36">-</a></th>
+        <td><a href="#slide36">36</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-37">
+        <th><a href="#slide37">-</a></th>
+        <td><a href="#slide37">37</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-38">
+        <th><a href="#slide38">-</a></th>
+        <td><a href="#slide38">38</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-39">
+        <th><a href="#slide39">Problem 3</a></th>
+        <td><a href="#slide39">39</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-40">
+        <th><a href="#slide40">-</a></th>
+        <td><a href="#slide40">40</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-41">
+        <th><a href="#slide41">Decators, context managers, "with"</a></th>
+        <td><a href="#slide41">41</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-42">
+        <th><a href="#slide42">-</a></th>
+        <td><a href="#slide42">42</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-43">
+        <th><a href="#slide43">-</a></th>
+        <td><a href="#slide43">43</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-44">
+        <th><a href="#slide44">-</a></th>
+        <td><a href="#slide44">44</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-45">
+        <th><a href="#slide45">Problem 4</a></th>
+        <td><a href="#slide45">45</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-46">
+        <th><a href="#slide46">-</a></th>
+        <td><a href="#slide46">46</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-47">
+        <th><a href="#slide47">-</a></th>
+        <td><a href="#slide47">47</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-48">
+        <th><a href="#slide48">-</a></th>
+        <td><a href="#slide48">48</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-49">
+        <th><a href="#slide49">-</a></th>
+        <td><a href="#slide49">49</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-50">
+        <th><a href="#slide50">Problem 5</a></th>
+        <td><a href="#slide50">50</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-51">
+        <th><a href="#slide51">-</a></th>
+        <td><a href="#slide51">51</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-52">
+        <th><a href="#slide52">yield Q&amp;A</a></th>
+        <td><a href="#slide52">52</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-53">
+        <th><a href="#slide53">Thank You!</a></th>
+        <td><a href="#slide53">53</a></td>
+      </tr>
+      
+      
+    </table>
+  </div>
+  
+  <div id="help" class="sidebar hidden">
+    <h2>Help</h2>
+    <table>
+      <caption>Help</caption>
+      <tr>
+        <th>Table of Contents</th>
+        <td>t</td>
+      </tr>
+      <tr>
+        <th>Exposé</th>
+        <td>ESC</td>
+      </tr>
+      <tr>
+        <th>Full screen slides</th>
+        <td>e</td>
+      </tr>
+      <tr>
+        <th>Presenter View</th>
+        <td>p</td>
+      </tr>
+      <tr>
+        <th>Source Files</th>
+        <td>s</td>
+      </tr>
+      <tr>
+        <th>Slide Numbers</th>
+        <td>n</td>
+      </tr>
+      <tr>
+        <th>Toggle screen blanking</th>
+        <td>b</td>
+      </tr>
+      <tr>
+        <th>Show/hide slide context</th>
+        <td>c</td>
+      </tr>
+      <tr>
+        <th>Notes</th>
+        <td>2</td>
+      </tr>
+      <tr>
+        <th>Help</th>
+        <td>h</td>
+      </tr>
+    </table>
+  </div>
+  <script>main()</script>
+</body>
+</html>
