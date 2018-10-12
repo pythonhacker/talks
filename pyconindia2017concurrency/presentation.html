@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<!--
+  Copyright 2010 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  Original slides: Marcin Wichary (mwichary@google.com)
+  Modifications: Ernest Delgado (ernestd@google.com)
+                 Alex Russell (slightlyoff@chromium.org)
+
+  landslide modifications: Adam Zapletal (adamzap@gmail.com)
+                           Nicolas Perriault (nperriault@gmail.com)
+-->
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Concurrency in Python 3.0</title>
+    <!-- Styles -->
+    
+    <link rel="stylesheet" media="print" href="file:///usr/lib/python2.7/dist-packages/landslide/themes/default/css/print.css">
+    <link rel="stylesheet" media="screen, projection" href="file:///usr/lib/python2.7/dist-packages/landslide/themes/default/css/screen.css">
+    
+    
+    <!-- /Styles -->
+    <!-- Javascripts -->
+    
+    <script type="text/javascript" src="file:///usr/lib/python2.7/dist-packages/landslide/themes/default/js/slides.js"></script>
+    
+    
+    
+    <!-- /Javascripts -->
+</head>
+<body>
+  <div id="blank"></div>
+  <div class="presentation">
+    <div id="current_presenter_notes">
+      <div id="presenter_note"></div>
+    </div>
+    <div class="slides">
+      
+      <!-- slide source: slides.md -->
+      <div class="slide-wrapper">
+        <div class="slide slide-1">
+          <div class="inner">
+            
+            <header><h1>Concurrency in Python 3.0</h1></header>
+            
+            
+            <section><p><strong>Anand B Pillai</strong> <br/>
+<em>anandpillail@letterboxes.org</em> <br/>
+<em>@skeptichacker</em> <br/></p></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.md">slides.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              1/12
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.md -->
+      <div class="slide-wrapper">
+        <div class="slide slide-2">
+          <div class="inner">
+            
+            <header><h2>Concurrency</h2></header>
+            
+            
+            <section><ul>
+<li>Most basic form of multi-tasking</li>
+<li>Perform more than one task during a given time duration</li>
+<li>Works by allocating time slices to tasks </li>
+<li>Real Life Example(s) - A drummer playing on drums, Lead Singer/Guitarist in a Band.</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.md">slides.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              2/12
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.md -->
+      <div class="slide-wrapper">
+        <div class="slide slide-3">
+          <div class="inner">
+            
+            <header><h2>Parallelism</h2></header>
+            
+            
+            <section><ul>
+<li>Perform more than one task at a given time</li>
+<li>Possible with multi-core CPUs</li>
+<li>Your phone can perform tasks in parallel, so can your laptop.</li>
+<li>Real Life Example(s) - A Printer/Xerox/Scanner machine, A modern web-browser.</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.md">slides.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              3/12
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.md -->
+      <div class="slide-wrapper">
+        <div class="slide slide-4">
+          <div class="inner">
+            
+            <header><h2>Types of Multitasking</h2></header>
+            
+            
+            <section><ul>
+<li>Pre-emptive: CPU manages threads priority via scheduler. Threads just run.</li>
+<li>Co-operative: No central mangement. Threads yield to others when they're done.</li>
+<li>Your laptop does the former. Almost all modern computing devices does this.</li>
+<li>Olden days with a single mainframe timeshare computers - People used to do latter!</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.md">slides.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              4/12
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.md -->
+      <div class="slide-wrapper">
+        <div class="slide slide-5">
+          <div class="inner">
+            
+            <header><h2>Python &amp; Concurrency</h2></header>
+            
+            
+            <section><ul>
+<li>Threading</li>
+<li>Multiprocessing</li>
+<li>Concurrent futures</li>
+<li>Async processing</li>
+<li>Libraries
+...</li>
+</ul>
+<p>Wait.</p></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.md">slides.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              5/12
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.md -->
+      <div class="slide-wrapper">
+        <div class="slide slide-6">
+          <div class="inner">
+            
+            <header><h2>Threads</h2></header>
+            
+            
+            <section><ul>
+<li>The GIL Monster</li>
+<li>Doesn't allow compute threads (bytecode heavy) to truly run in parallel.</li>
+<li>Causes thread thrashing and priority inversion</li>
+<li>I/O bound threads and some libraries (numpy etc) dont have a problem.</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.md">slides.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              6/12
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.md -->
+      <div class="slide-wrapper">
+        <div class="slide slide-7">
+          <div class="inner">
+            
+            <header><h2>Processes</h2></header>
+            
+            
+            <section><ul>
+<li>Gets around GIL</li>
+<li>But avoid sharing state</li>
+<li>Use return values as much as possible.</li>
+<li>Multiprocessing manager is good - but is rather heavy.</li>
+<li>Funky data types for shared memory - not very useful to write complex programs.</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.md">slides.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              7/12
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.md -->
+      <div class="slide-wrapper">
+        <div class="slide slide-8">
+          <div class="inner">
+            
+            <header><h2>Concurrent Futures</h2></header>
+            
+            
+            <section><ul>
+<li>Multiple processes returning results in future</li>
+<li>Good programming paradigm for data parallel computations</li>
+<li>Provides same interface for threading &amp; processes</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.md">slides.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              8/12
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.md -->
+      <div class="slide-wrapper">
+        <div class="slide slide-9">
+          <div class="inner">
+            
+            <header><h2>Asyncio</h2></header>
+            
+            
+            <section><ul>
+<li>New library in Python3</li>
+<li>Asynchronous processing via co-operative multitasking</li>
+<li>Single thread</li>
+<li>Use exotic <em>async</em> and <em>await</em> keywords</li>
+<li>More library support needed</li>
+<li>Slightly high learning curve.</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.md">slides.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              9/12
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.md -->
+      <div class="slide-wrapper">
+        <div class="slide slide-10">
+          <div class="inner">
+            
+            <header><h2>Compute Parallel Problems</h2></header>
+            
+            
+            <section><ul>
+<li>Perform multiple tasks on the same data set in parallel (Pipelines)</li>
+<li>Example - Multimedia processing. Processing a set of videos to reduce their size (encoding), plus extracting meta-data (for indexing).</li>
+<li>Example - Machine Learning on massive data sets. Same dataset is worked upon multiple ML algorithms in parallel.</li>
+</ul>
+<p>We won't be focussing on compute parallel problems.</p></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.md">slides.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              10/12
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.md -->
+      <div class="slide-wrapper">
+        <div class="slide slide-11">
+          <div class="inner">
+            
+            <header><h2>Data Parallel Problems</h2></header>
+            
+            
+            <section><ul>
+<li>Set of problems where each element of the input data can be processed independently of others</li>
+<li>Ideal for parallel processing because each core can work on different data elements in parallel.</li>
+<li>Final output is often a combination of the individual processed output.</li>
+<li>Example Problems<ul>
+<li><strong>Matrix Multiplication</strong> - Each row of the matrix can be processed in parallel and combined to generate final matrix.</li>
+<li><strong>Fractal Image Generation</strong> - Each row of the image can be generated parallely to generate final image.</li>
+<li><strong>Puzzle Solvers</strong> - Multiple solvers can be run in parallel to generate single solution or a batch of solutions. E.g: Sudoku Solver, Maze Solver etc.</li>
+<li><strong>I/O Tasks</strong> - Almost all tasks involing input/output on file system or network can be run in parallel. E.g: Web Crawler,</li>
+</ul>
+</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.md">slides.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              11/12
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.md -->
+      <div class="slide-wrapper">
+        <div class="slide slide-12">
+          <div class="inner">
+            
+            
+            <section><p>LET'S GO!</p></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.md">slides.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              12/12
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+  <div id="toc" class="sidebar hidden">
+    <h2>Table of Contents</h2>
+    <table>
+      <caption>Table of Contents</caption>
+      
+      <tr id="toc-row-1">
+        <th><a href="#slide1">Concurrency in Python 3.0</a></th>
+        <td><a href="#slide1">1</a></td>
+      </tr>
+      
+        
+        <tr id="toc-row-2" class="sub">
+          <th><a href="#slide2">Concurrency</a></th>
+          <td><a href="#slide2">2</a></td>
+        </tr>
+        
+        <tr id="toc-row-3" class="sub">
+          <th><a href="#slide3">Parallelism</a></th>
+          <td><a href="#slide3">3</a></td>
+        </tr>
+        
+        <tr id="toc-row-4" class="sub">
+          <th><a href="#slide4">Types of Multitasking</a></th>
+          <td><a href="#slide4">4</a></td>
+        </tr>
+        
+        <tr id="toc-row-5" class="sub">
+          <th><a href="#slide5">Python &amp; Concurrency</a></th>
+          <td><a href="#slide5">5</a></td>
+        </tr>
+        
+        <tr id="toc-row-6" class="sub">
+          <th><a href="#slide6">Threads</a></th>
+          <td><a href="#slide6">6</a></td>
+        </tr>
+        
+        <tr id="toc-row-7" class="sub">
+          <th><a href="#slide7">Processes</a></th>
+          <td><a href="#slide7">7</a></td>
+        </tr>
+        
+        <tr id="toc-row-8" class="sub">
+          <th><a href="#slide8">Concurrent Futures</a></th>
+          <td><a href="#slide8">8</a></td>
+        </tr>
+        
+        <tr id="toc-row-9" class="sub">
+          <th><a href="#slide9">Asyncio</a></th>
+          <td><a href="#slide9">9</a></td>
+        </tr>
+        
+        <tr id="toc-row-10" class="sub">
+          <th><a href="#slide10">Compute Parallel Problems</a></th>
+          <td><a href="#slide10">10</a></td>
+        </tr>
+        
+        <tr id="toc-row-11" class="sub">
+          <th><a href="#slide11">Data Parallel Problems</a></th>
+          <td><a href="#slide11">11</a></td>
+        </tr>
+        
+      
+      
+      <tr id="toc-row-12">
+        <th><a href="#slide12">-</a></th>
+        <td><a href="#slide12">12</a></td>
+      </tr>
+      
+      
+    </table>
+  </div>
+  
+  <div id="help" class="sidebar hidden">
+    <h2>Help</h2>
+    <table>
+      <caption>Help</caption>
+      <tr>
+        <th>Table of Contents</th>
+        <td>t</td>
+      </tr>
+      <tr>
+        <th>Exposé</th>
+        <td>ESC</td>
+      </tr>
+      <tr>
+        <th>Full screen slides</th>
+        <td>e</td>
+      </tr>
+      <tr>
+        <th>Presenter View</th>
+        <td>p</td>
+      </tr>
+      <tr>
+        <th>Source Files</th>
+        <td>s</td>
+      </tr>
+      <tr>
+        <th>Slide Numbers</th>
+        <td>n</td>
+      </tr>
+      <tr>
+        <th>Toggle screen blanking</th>
+        <td>b</td>
+      </tr>
+      <tr>
+        <th>Show/hide slide context</th>
+        <td>c</td>
+      </tr>
+      <tr>
+        <th>Notes</th>
+        <td>2</td>
+      </tr>
+      <tr>
+        <th>Help</th>
+        <td>h</td>
+      </tr>
+    </table>
+  </div>
+  <script>main()</script>
+</body>
+</html>

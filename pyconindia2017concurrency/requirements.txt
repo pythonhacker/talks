@@ -1,0 +1,2 @@
+pymp-pypi==0.3.1
+Pillow==4.0.0

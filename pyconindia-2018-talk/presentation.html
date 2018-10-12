@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<!--
+  Copyright 2010 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  Original slides: Marcin Wichary (mwichary@google.com)
+  Modifications: Ernest Delgado (ernestd@google.com)
+                 Alex Russell (slightlyoff@chromium.org)
+
+  landslide modifications: Adam Zapletal (adamzap@gmail.com)
+                           Nicolas Perriault (nperriault@gmail.com)
+-->
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Large Scale Web Crawling in Python</title>
+    <!-- Styles -->
+    
+    <link rel="stylesheet" media="print" href="avalanche/avalanche/css/print.css">
+    <link rel="stylesheet" media="screen, projection" href="avalanche/avalanche/css/screen.css">
+    
+    
+    <!-- /Styles -->
+    <!-- Javascripts -->
+    
+    <script type="text/javascript" src="avalanche/avalanche/js/slides.js"></script>
+    
+    
+    <!-- /Javascripts -->
+</head>
+<body>
+  <div id="blank"></div>
+  <div class="presentation highlight">
+    <div id="time">
+      <span id="hours">00</span>:<span id="minutes">00</span>:<span id="seconds">00</span>
+    </div>            
+    <div id="current_presenter_notes">
+      <div id="presenter_note"></div>
+    </div>
+    <div class="slides">
+      
+      <!-- slide source: large_scale_crawler.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Large Scale Web Crawling in Python</h1></header>
+            
+            
+            <section><p><strong>Anand B Pillai</strong>, <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#97;&#110;&#97;&#110;&#100;&#112;&#105;&#108;&#108;&#97;&#105;&#64;&#108;&#101;&#116;&#116;&#101;&#114;&#98;&#111;&#120;&#101;&#115;&#46;&#111;&#114;&#103;">&#97;&#110;&#97;&#110;&#100;&#112;&#105;&#108;&#108;&#97;&#105;&#64;&#108;&#101;&#116;&#116;&#101;&#114;&#98;&#111;&#120;&#101;&#115;&#46;&#111;&#114;&#103;</a>, @skeptichacker <br/>
+<strong>Noufal Ibrahim</strong>, <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#110;&#111;&#117;&#102;&#97;&#108;&#64;&#110;&#105;&#98;&#114;&#97;&#104;&#105;&#109;&#46;&#110;&#101;&#116;&#46;&#105;&#110;">&#110;&#111;&#117;&#102;&#97;&#108;&#64;&#110;&#105;&#98;&#114;&#97;&#104;&#105;&#109;&#46;&#110;&#101;&#116;&#46;&#105;&#110;</a>, @noufalibrahim <br/></p></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="large_scale_crawler.md">large_scale_crawler.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              1/28
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: large_scale_crawler.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Speakers</h1></header>
+            
+            
+            <section><table>
+<tr><td><img src="anand.jpg" /></td><td><img src="noufal_ibrahim.jpg" /></td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Anand B Pillai</td>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Noufal Ibrahim</td></tr>
+<tr><td><font size="2pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PSF Fellow, Author, Software Architect.</font></td>
+<td><font size="2pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PSF Fellow, Founder & CEO, Hamon Technologies.</font></td></tr>
+</table></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="large_scale_crawler.md">large_scale_crawler.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              2/28
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: large_scale_crawler.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h2>This talk is composed of two stories.</h2></header>
+            
+            
+            <section><ul>
+<li>Story of an Engineer solving an <em>itch</em> and publishing the source code.</li>
+<li>Story of how this was used by one of his friends to solve a problem.</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="large_scale_crawler.md">large_scale_crawler.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              3/28
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: large_scale_crawler.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h2>Web Crawling</h2></header>
+            
+            
+            <section><ul>
+<li>Automated browsing and data extraction from websites</li>
+<li>Performed by dedicated programs called <code>spiders</code> or <code>crawlers</code></li>
+<li>Usually uses specific <code>rules</code> to fetch specific data or perform certain actions.</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="large_scale_crawler.md">large_scale_crawler.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              4/28
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: large_scale_crawler.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h2>Some Use-cases</h2></header>
+            
+            
+            <section><ul>
+<li>Search Engines</li>
+<li>Automatic Website Maintenance (Link Checking)</li>
+<li>Blog Aggregation</li>
+<li>Academic Research</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="large_scale_crawler.md">large_scale_crawler.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              5/28
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: large_scale_crawler.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h2>Large scale crawling</h2></header>
+            
+            
+            <section><ul>
+<li><strong>Intent</strong>   - Crawl multiple websites at a given time (50 ~ 100)</li>
+<li><strong>Goal</strong>     - Save thousands of URLs per site, totalling millions of URLs across websites.</li>
+<li><strong>Timespan</strong> - Days and Weeks ( &lt; 1 month )</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="large_scale_crawler.md">large_scale_crawler.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              6/28
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: large_scale_crawler.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h2>Problems (a few!)</h2></header>
+            
+            
+            <section><ol>
+<li>Crawl Aggressiveness - How polite or aggressive your crawl is.</li>
+<li>Crawling Errors      - Catching and dealing with errors in fetching URLs</li>
+<li>URL De-Duplication   - Making sure you don't keep crawling URLs again and again.</li>
+<li>URL Traps            - Making sure your crawler doesn't get lost in part of a website.</li>
+</ol>
+<p>We are going to focus on (1) for most of this talk.</p></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="large_scale_crawler.md">large_scale_crawler.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              7/28
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: large_scale_crawler.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>First Story</h1></header>
+            
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="large_scale_crawler.md">large_scale_crawler.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              8/28
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: large_scale_crawler.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h2>Startup Troubles</h2></header>
+            
+            
+            <section><ul>
+<li>In 2015, I was building a large-scale ecommerce search engine for my employer.</li>
+<li>Involved crawling multiple e-commerce websites and harvesting product data and indexing them to SOLR.</li>
+<li>A typical crawl involved collecting 100s of 1000s of URLs from one website.</li>
+<li>The SOLR index size (at peak) was 30 million (3 Cr) products.</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="large_scale_crawler.md">large_scale_crawler.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              9/28
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: large_scale_crawler.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h2>Crawl - Aggressive or Polite ?</h2></header>
+            
+            
+            <section><ul>
+<li>Too polite - You take too much time in downloading and indexing the data.</li>
+<li>Too aggressive - The sites block your crawlers I.P address by using Firewall rules!</li>
+<li>In between     - You always risk getting blocked anyway if you crawl long enough from same IP.</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="large_scale_crawler.md">large_scale_crawler.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              10/28
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: large_scale_crawler.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h2>Solution - Rotating Proxies</h2></header>
+            
+            
+            <section><ul>
+<li>Rotating Proxies provide you with a set of IP addresses behind which you <code>hide</code> your crawlers IP.</li>
+<li>Your crawl is sent through multiple IP addresses.<ul>
+<li>Firewall rules find it difficult to engage when source IP addresses switch a lot.</li>
+<li>In worst case the proxy IP is blocked but you can always get a fresh set of proxies.</li>
+</ul>
+</li>
+<li>Examples - NoHoDo, ProxyRotator, etc.</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="large_scale_crawler.md">large_scale_crawler.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              11/28
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: large_scale_crawler.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h2>Problems</h2></header>
+            
+            
+            <section><ul>
+<li>Most of these services limit your concurrent connections (usually 100-200 connections max)</li>
+<li>You don't have control over the actual proxy servers.</li>
+<li>You share the proxy nodes with others - not great for security.</li>
+<li>Your costs escalate pretty soon if your crawls are huge and continuous.</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="large_scale_crawler.md">large_scale_crawler.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              12/28
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: large_scale_crawler.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h2>Solution - Build Own Proxy</h2></header>
+            
+            
+            <section><ul>
+<li>Build a proxy rotator with <code>Linode</code> as the ISP</li>
+<li>A Python middleware program takes care of active proxy rotation.</li>
+<li>Proxies use <code>squid</code> to fetch pages. Caching on proxies can be turned on or off.</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="large_scale_crawler.md">large_scale_crawler.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              13/28
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: large_scale_crawler.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h2>Why Linode ?</h2></header>
+            
+            
+            <section><ul>
+<li>Has a nice and simple API which can be easily automated via Python.</li>
+<li>A Python wrapper on the API was already available which was forked &amp; enhanced.</li>
+<li>Has data centers in Europe, Asia apart from multiple ones in US.</li>
+<li>Very reasonable VPS costs.</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="large_scale_crawler.md">large_scale_crawler.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              14/28
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: large_scale_crawler.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h2>Solution - Build Own Proxy (contd.)</h2></header>
+            
+            
+            <section><ul>
+<li>Clients (crawlers) connect to a node which deploys <code>HAProxy</code></li>
+<li>The <code>HAProxy</code> node is the <code>gateway</code> which load-balances the requests to the squid nodes.</li>
+<li>The python middleware (rotating-proxy-daemon) runs in the gateway node.</li>
+<li>For preventing anyone from using the system (open proxy!), the squid nodes use HTTP (basic) authentication.</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="large_scale_crawler.md">large_scale_crawler.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              15/28
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: large_scale_crawler.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h2>Architecture</h2></header>
+            
+            
+            <section><p><img src="arch.png" /></p></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="large_scale_crawler.md">large_scale_crawler.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              16/28
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: large_scale_crawler.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h2>Code</h2></header>
+            
+            
+            <section><p><img src="project.jpg" /></p></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="large_scale_crawler.md">large_scale_crawler.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              17/28
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: large_scale_crawler.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h2>Story Conclusion</h2></header>
+            
+            
+            <section><ul>
+<li>I was able to do faster and more reliable crawls under a fraction of the earlier costs.</li>
+<li>Re-used the same architecture and system successfully in the next two startups I worked for.</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="large_scale_crawler.md">large_scale_crawler.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              18/28
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: large_scale_crawler.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h2>Typical Deployment and Costs</h2></header>
+            
+            
+            <section><ul>
+<li>Gateway Node - 2GB Linode (10 $pm)</li>
+<li>Using a Linode 1GB Node (5$ pm) and with a proxy-farm of 15-20 nodes: 80-90 $ pm</li>
+<li>Using a Linode Nanode (2$ pm) and with a proxy-farm of 15-20 nodes: 40-50 $ pm</li>
+<li>Unlimited connections, nearly unlimited bandwidth, total control of your infrastructure.</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="large_scale_crawler.md">large_scale_crawler.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              19/28
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: large_scale_crawler.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Second Story</h1></header>
+            
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="large_scale_crawler.md">large_scale_crawler.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              20/28
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: large_scale_crawler.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h2>The Data Problem</h2></header>
+            
+            
+            <section><ul>
+<li>The ML problem is a data problem</li>
+<li>The data problem is two fold<ul>
+<li>Getting data</li>
+<li>Cleaning data</li>
+</ul>
+</li>
+<li>We needed a few ten million URLs </li>
+<li>From six "data sources" via. "undocumented APIs"</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="large_scale_crawler.md">large_scale_crawler.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              21/28
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: large_scale_crawler.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h2>The Blocking Problem</h2></header>
+            
+            
+            <section><ul>
+<li>The sources were blocking the crawlers from the same IP after a few dozen hits.</li>
+<li>The initial solution was to use <code>tor</code>. </li>
+<li>About 4s per URL. Tooooo slow...!</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="large_scale_crawler.md">large_scale_crawler.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              22/28
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: large_scale_crawler.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h2>Used the Rotating Proxy</h2></header>
+            
+            
+            <section><ul>
+<li>Added AWS support (and contributed code back to the project)</li>
+<li>Used a cluster of 10 proxies and the load balancer.</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="large_scale_crawler.md">large_scale_crawler.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              23/28
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: large_scale_crawler.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h2>A Digression</h2></header>
+            
+            
+            <section><ul>
+<li>Machines got compromised twice.</li>
+<li>Used about 1 month of bandwidth in half a day :-P</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="large_scale_crawler.md">large_scale_crawler.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              24/28
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: large_scale_crawler.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h2>Performance Improvement</h2></header>
+            
+            
+            <section><ul>
+<li>Once set up, we got between 0.9 and 1.5s per URL.</li>
+<li>Some issues still persisted. <ul>
+<li>Changing User-agents</li>
+<li>Frequency of Rotation</li>
+</ul>
+</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="large_scale_crawler.md">large_scale_crawler.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              25/28
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: large_scale_crawler.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h2>Some thoughts and future plans</h2></header>
+            
+            
+            <section><ul>
+<li>Abstract out cloud provider.</li>
+<li>Create ansible notebooks for machine setups.</li>
+<li>Modernise the infrastructure some more.</li>
+<li>Perhaps make the whole thing available as a service? :)</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="large_scale_crawler.md">large_scale_crawler.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              26/28
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: large_scale_crawler.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h2>References</h2></header>
+            
+            
+            <section><ol>
+<li><a href="https://github.com/pythonhacker/rotating-proxy-daemon">Rotating Proxy Daemon</a></li>
+<li><a href="https://bitbucket.org/skeptichacker/linode/">Linode Python API</a></li>
+<li><a href="http://squid-cache.org/">Squid Caching Proxy</a></li>
+<li><a href="http://www.haproxy.org">HAProxy</a></li>
+<li><a href="https://github.com/pythonhacker/multicrawler">MultiCrawler</a></li>
+<li><a href="https://github.com/TeamHG-Memex/scrapy-rotating-proxies">Scrapy Rotating Proxies</a></li>
+</ol></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="large_scale_crawler.md">large_scale_crawler.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              27/28
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: large_scale_crawler.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            
+            <section><p>Thank You.</p></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="large_scale_crawler.md">large_scale_crawler.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              28/28
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+  
+  <div id="toc" class="sidebar hidden">
+    <h2>Table of Contents</h2>
+    <table>
+      <caption>Table of Contents</caption>
+      
+      <tr id="toc-row-1">
+        <th><a href="#slide1">Large Scale Web Crawling in Python</a></th>
+        <td><a href="#slide1">1</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-2">
+        <th><a href="#slide2">Speakers</a></th>
+        <td><a href="#slide2">2</a></td>
+      </tr>
+      
+        
+        <tr id="toc-row-3" class="sub">
+          <th><a href="#slide3">This talk is composed of two stories.</a></th>
+          <td><a href="#slide3">3</a></td>
+        </tr>
+        
+        <tr id="toc-row-4" class="sub">
+          <th><a href="#slide4">Web Crawling</a></th>
+          <td><a href="#slide4">4</a></td>
+        </tr>
+        
+        <tr id="toc-row-5" class="sub">
+          <th><a href="#slide5">Some Use-cases</a></th>
+          <td><a href="#slide5">5</a></td>
+        </tr>
+        
+        <tr id="toc-row-6" class="sub">
+          <th><a href="#slide6">Large scale crawling</a></th>
+          <td><a href="#slide6">6</a></td>
+        </tr>
+        
+        <tr id="toc-row-7" class="sub">
+          <th><a href="#slide7">Problems (a few!)</a></th>
+          <td><a href="#slide7">7</a></td>
+        </tr>
+        
+      
+      
+      <tr id="toc-row-8">
+        <th><a href="#slide8">First Story</a></th>
+        <td><a href="#slide8">8</a></td>
+      </tr>
+      
+        
+        <tr id="toc-row-9" class="sub">
+          <th><a href="#slide9">Startup Troubles</a></th>
+          <td><a href="#slide9">9</a></td>
+        </tr>
+        
+        <tr id="toc-row-10" class="sub">
+          <th><a href="#slide10">Crawl - Aggressive or Polite ?</a></th>
+          <td><a href="#slide10">10</a></td>
+        </tr>
+        
+        <tr id="toc-row-11" class="sub">
+          <th><a href="#slide11">Solution - Rotating Proxies</a></th>
+          <td><a href="#slide11">11</a></td>
+        </tr>
+        
+        <tr id="toc-row-12" class="sub">
+          <th><a href="#slide12">Problems</a></th>
+          <td><a href="#slide12">12</a></td>
+        </tr>
+        
+        <tr id="toc-row-13" class="sub">
+          <th><a href="#slide13">Solution - Build Own Proxy</a></th>
+          <td><a href="#slide13">13</a></td>
+        </tr>
+        
+        <tr id="toc-row-14" class="sub">
+          <th><a href="#slide14">Why Linode ?</a></th>
+          <td><a href="#slide14">14</a></td>
+        </tr>
+        
+        <tr id="toc-row-15" class="sub">
+          <th><a href="#slide15">Solution - Build Own Proxy (contd.)</a></th>
+          <td><a href="#slide15">15</a></td>
+        </tr>
+        
+        <tr id="toc-row-16" class="sub">
+          <th><a href="#slide16">Architecture</a></th>
+          <td><a href="#slide16">16</a></td>
+        </tr>
+        
+        <tr id="toc-row-17" class="sub">
+          <th><a href="#slide17">Code</a></th>
+          <td><a href="#slide17">17</a></td>
+        </tr>
+        
+        <tr id="toc-row-18" class="sub">
+          <th><a href="#slide18">Story Conclusion</a></th>
+          <td><a href="#slide18">18</a></td>
+        </tr>
+        
+        <tr id="toc-row-19" class="sub">
+          <th><a href="#slide19">Typical Deployment and Costs</a></th>
+          <td><a href="#slide19">19</a></td>
+        </tr>
+        
+      
+      
+      <tr id="toc-row-20">
+        <th><a href="#slide20">Second Story</a></th>
+        <td><a href="#slide20">20</a></td>
+      </tr>
+      
+        
+        <tr id="toc-row-21" class="sub">
+          <th><a href="#slide21">The Data Problem</a></th>
+          <td><a href="#slide21">21</a></td>
+        </tr>
+        
+        <tr id="toc-row-22" class="sub">
+          <th><a href="#slide22">The Blocking Problem</a></th>
+          <td><a href="#slide22">22</a></td>
+        </tr>
+        
+        <tr id="toc-row-23" class="sub">
+          <th><a href="#slide23">Used the Rotating Proxy</a></th>
+          <td><a href="#slide23">23</a></td>
+        </tr>
+        
+        <tr id="toc-row-24" class="sub">
+          <th><a href="#slide24">A Digression</a></th>
+          <td><a href="#slide24">24</a></td>
+        </tr>
+        
+        <tr id="toc-row-25" class="sub">
+          <th><a href="#slide25">Performance Improvement</a></th>
+          <td><a href="#slide25">25</a></td>
+        </tr>
+        
+        <tr id="toc-row-26" class="sub">
+          <th><a href="#slide26">Some thoughts and future plans</a></th>
+          <td><a href="#slide26">26</a></td>
+        </tr>
+        
+        <tr id="toc-row-27" class="sub">
+          <th><a href="#slide27">References</a></th>
+          <td><a href="#slide27">27</a></td>
+        </tr>
+        
+      
+      
+      <tr id="toc-row-28">
+        <th><a href="#slide28">-</a></th>
+        <td><a href="#slide28">28</a></td>
+      </tr>
+      
+      
+    </table>
+  </div>
+  
+  <div id="help" class="sidebar hidden">
+    <h2>Help</h2>
+    <table>
+      <caption>Help</caption>
+      <tr>
+        <th>Table of contents</th>
+        <td>t</td>
+      </tr>
+      <tr>
+        <th>Exposé</th>
+        <td>ESC</td>
+      </tr>
+      <tr>
+        <th>Autoscale</th>
+        <td>e</td>
+      </tr>
+      <tr>
+        <th>Full screen slides</th>
+        <td>f</td>
+      </tr>
+      <tr>
+        <th>Presenter view</th>
+        <td>p</td>
+      </tr>
+      <tr>
+        <th>Source files</th>
+        <td>s</td>
+      </tr>
+      <tr>
+        <th>Slide numbers</th>
+        <td>n</td>
+      </tr>
+      <tr>
+        <th>Blank screen</th>
+        <td>b</td>
+      </tr>
+      <tr>
+        <th>Notes</th>
+        <td>2</td>
+      </tr>
+      <tr>
+        <th>Help</th>
+        <td>h</td>
+      </tr>
+    </table>
+  </div>
+  <script>main();</script>
+</body>
+</html>

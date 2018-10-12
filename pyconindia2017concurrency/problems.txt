@@ -1,0 +1,7 @@
+1. Make a simple parallel URL fetcher using
+   a. Threads, b. Processes (Pool)
+
+2. Write a program which searches for a given word inside text files in a given folder. Then parallelize the program using processes.
+
+3. For a set of 10000 disk files containing integers, find the maximum and minimum integers
+.
